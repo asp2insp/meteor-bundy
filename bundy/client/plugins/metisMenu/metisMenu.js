@@ -12,7 +12,7 @@
         defaults = {
             toggle: true
         };
-        
+
     function Plugin(element, options) {
         this.element = element;
         this.settings = $.extend({}, defaults, options);

@@ -15,3 +15,5 @@ iron:router
 coffeescript
 linto:fontawesome
 mizzao:bootstrap-3
+joshowens:simple-form
+momentjs:moment

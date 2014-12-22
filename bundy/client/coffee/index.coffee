@@ -58,3 +58,7 @@ Template.taskDropdownElement.helpers(
   style: () ->
     return "width: " + this.percentComplete + "%"
 )
+
+UI.registerHelper('currentLocalTime', () ->
+  return moment(new Date()).format('l LT')
+)
