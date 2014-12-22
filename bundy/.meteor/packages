@@ -9,5 +9,9 @@ autopublish
 insecure
 accounts-ui
 accounts-password
-bootstrap
 less
+mquandalle:jade
+iron:router
+coffeescript
+linto:fontawesome
+mizzao:bootstrap-3
