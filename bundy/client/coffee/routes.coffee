@@ -3,18 +3,20 @@ finalRoutes = []
 navRoutes = [
   new NavRoute('sessions', 'fa-calendar')
   new NavRoute('my-sessions', 'fa-user', {label: 'My Sessions', parentName: 'sessions'})
-  new NavRoute('create', 'fa-plus', {parentName: 'sessions'})
+  new NavRoute('log', 'fa-plus', {parentName: 'sessions'})
 
   new NavRoute('tutors', 'fa-university')
   new NavRoute('clients', 'fa-users')
   new NavRoute('monthly-billing', 'fa-money', {label: 'Monthly Billing'})
-  new NavRoute('pl', 'fa-line-chart', {label: 'Profit/Loss'})
+  new NavRoute('accounting', 'fa-line-chart')
 
   new NavRoute('profile', '', {isMainNav: false})
+  new NavRoute('edit-profile', '', {isMainNav: false})
+
 
   new NavRoute('sign-up', '', {isMainNav: false, template: 'signUp'})
-  new NavRoute('', '', {isMainNav: false, redirect: 'create'})
-  new NavRoute('index', '', {isMainNav: false, redirect: 'create'})
+  new NavRoute('', '', {isMainNav: false, redirect: 'log'})
+  new NavRoute('index', '', {isMainNav: false, redirect: 'log'})
 ]
 
 demos = [
@@ -33,7 +35,7 @@ demos = [
 
 finalRoutes.push navRoutes...
 
-#finalRoutes.push demos...
+finalRoutes.push demos...
 
 navRouteList = new NavRouteList(finalRoutes)
 
