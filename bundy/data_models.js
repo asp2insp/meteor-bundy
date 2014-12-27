@@ -3,7 +3,7 @@
 RateAdjustments = new Mongo.Collection('RateAdjustments');
 
 // {name, phone, email, [bonus pay items], type}
-Employees = new Mongo.Collection('Employees');
+Employees = Meteor.users
 
 // {name, phone, email, [billing_adjustments]}
 Clients = new Mongo.Collection('Clients');

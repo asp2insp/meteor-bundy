@@ -22,7 +22,8 @@ Template.log.events({
     Session.set('selectedClientId', $('#client').val())
   'change #sessiontype': (e, t) ->
     Session.set('selectedRateId', $('#sessiontype').val())
-  'submit #logsession': (e, t) ->
+  'submit #log-session': (e, t) ->
+    e.preventDefault()
     logSession()
 })
 
@@ -36,44 +37,68 @@ logSession = () ->
   session.employee_id = Meteor.userId()
   session.client_id = Session.get('selectedClientId')
   session.billing_rate_id = Session.get('selectedRateId')
-  rate = BillingRates.findOne(session.billing_rate_id)
   session.notes = $('#notes').val()
+  day = moment($("#date").val())
+  start = moment($("#starttime").val(), 'h:mma')
+  end = moment($("#endtime").val(), 'h:mma')
+  session.start_time = day.clone()
+                          .add(start.hours(), 'hours')
+                          .add(start.minutes(), 'minutes')
+                          .toDate()
+  session.end_time = day.clone()
+                        .add(end.hours(), 'hours')
+                        .add(end.minutes(), 'minutes')
+                        .toDate()
 
-  # Figure out number of units from the times
-  calculateUnits(session)
-
-  # Calculate the total bill
-  calculateBillingAdjustments(session)
-  calculateTotalBill(session)
-
-  # Calculate the total pay
-  calculatePayAdjustments(session)
-  calculateTotalPay(session)
+  _(session).chain()
+            .tap(calculateUnits)
+            .tap(calculateBillingAdjustments)
+            .tap(calculateTotalBill)
+            .tap(calculatePayAdjustments)
+            .tap(calculateTotalPay)
+  Sessions.insert(session)
 
 
 calculateUnits = (session) ->
-  session.units = 0
+  start = moment(session.start_time)
+  end = moment(session.end_time)
+  session.units = moment.duration(end.diff(start)).asHours()
   return session
 
 calculatePayAdjustments = (session) ->
   session.pay_adjustments = []
+  _.forEach(Employees.findOne(session.employee_id).pay_adjustments, (adj) ->
+    if conditionsMet(adj, session)
+      session.pay_adjustments.push(adj)
+  )
   return session
 
 calculateBillingAdjustments = (session) ->
   session.billing_adjustments = []
+  _.forEach(Clients.findOne(session.client_id).billing_adjustments, (adj) ->
+    if conditionsMet(adj, session)
+      session.billing_adjustments.push(adj)
+  )
   return session
 
+conditionsMet = (adj, session) ->
+  return _.reduce(adj.conditions, (res, value, cond) ->
+    return session[cond] == value && res
+  , true)
+
 calculateTotalBill = (session) ->
+  rate = BillingRates.findOne(session.billing_rate_id)
   session.total_bill = session.units * rate.unit_bill_rate
   session.total_bill += _.reduce(session.billing_adjustments, (sum, adj) ->
     sum = sum || 0
     return sum + adj.amount
-  )
+  , 0)
   return session
 
 calculateTotalPay = (session) ->
+  rate = BillingRates.findOne(session.billing_rate_id)
   session.total_pay = session.units * rate.unit_pay_rate
   session.total_pay += _.reduce(session.billing_adjustments, (sum, adj) ->
     sum = sum || 0
     return sum + adj.amount
-  )
+  , 0)
