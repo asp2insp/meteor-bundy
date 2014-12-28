@@ -1,7 +1,7 @@
 Template.log.helpers({
   getClientsOfUser: () ->
     clients = []
-    if userIsAnEmployee
+    if Utils.userIsAnEmployee()
       BillingRates.find({employee_id: Meteor.userId()}).forEach((rate) ->
         client = Clients.findOne({_id: rate.client_id})
         if !_.findWhere(clients, {_id: client._id})
@@ -20,23 +20,18 @@ Template.log.helpers({
 Template.log.events({
   'change #client': (e, t) ->
     Session.set('selectedClientId', $('#client').val())
-  'change #sessiontype': (e, t) ->
-    Session.set('selectedRateId', $('#sessiontype').val())
   'submit #log-session': (e, t) ->
     e.preventDefault()
     logSession()
 })
-
-userIsAnEmployee = () ->
-  return EmployeeTypes.find({type: Meteor.user().profile.type}).count() > 0
 
 # {employee_id, client_id, billing_rate_id, start_time, end_time, units,
 #  notes, [pay_adjustments], [billing_adjustments], total_bill, total_pay}
 logSession = () ->
   session = {}
   session.employee_id = Meteor.userId()
-  session.client_id = Session.get('selectedClientId')
-  session.billing_rate_id = Session.get('selectedRateId')
+  session.client_id = $('#client').val()
+  session.billing_rate_id = $('#sessiontype').val()
   session.notes = $('#notes').val()
   day = moment($("#date").val())
   start = moment($("#starttime").val(), 'h:mma')
@@ -67,27 +62,29 @@ calculateUnits = (session) ->
 
 calculatePayAdjustments = (session) ->
   session.pay_adjustments = []
-  _.forEach(Employees.findOne(session.employee_id).pay_adjustments, (adj) ->
+  _.forEach(Employees.findOne({_id: session.employee_id}).pay_adjustments, (adj) ->
     if conditionsMet(adj, session)
-      session.pay_adjustments.push(adj)
+      session.pay_adjustments.push(_.pick(adj, ['name', 'amount']))
   )
   return session
 
 calculateBillingAdjustments = (session) ->
   session.billing_adjustments = []
-  _.forEach(Clients.findOne(session.client_id).billing_adjustments, (adj) ->
+  _.forEach(Clients.findOne({_id: session.client_id}).billing_adjustments, (adj) ->
     if conditionsMet(adj, session)
-      session.billing_adjustments.push(adj)
+      session.billing_adjustments.push(_.pick(adj, ['name', 'amount']))
   )
   return session
 
 conditionsMet = (adj, session) ->
-  return _.reduce(adj.conditions, (res, value, cond) ->
-    return session[cond] == value && res
-  , true)
+  adj.conditions ?= {}
+  # local minimongo for resolving constraints
+  currentSession = new Meteor.Collection(null);
+  currentSession.insert(session)
+  return currentSession.find(adj.conditions).count() == 1
 
 calculateTotalBill = (session) ->
-  rate = BillingRates.findOne(session.billing_rate_id)
+  rate = BillingRates.findOne({_id: session.billing_rate_id})
   session.total_bill = session.units * rate.unit_bill_rate
   session.total_bill += _.reduce(session.billing_adjustments, (sum, adj) ->
     sum = sum || 0
@@ -96,7 +93,7 @@ calculateTotalBill = (session) ->
   return session
 
 calculateTotalPay = (session) ->
-  rate = BillingRates.findOne(session.billing_rate_id)
+  rate = BillingRates.findOne({_id: session.billing_rate_id})
   session.total_pay = session.units * rate.unit_pay_rate
   session.total_pay += _.reduce(session.billing_adjustments, (sum, adj) ->
     sum = sum || 0
