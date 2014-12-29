@@ -1,3 +1,12 @@
+# Core
+ - Tutor management
+ - Client Management
+ - Billing Rate management
+ - Monthly Billing flow
+ - P/L reports
+  - Annual
+  - Monthly? Trends?
+
 # Cleanup
  - Session log form should clear after sucessful submit
  - Search in DataTables doesn't work

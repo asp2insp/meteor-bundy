@@ -2,12 +2,32 @@ Meteor.isServer && myLog = new lc.EventLog(['client_id', 'employee_id'])
 
 # {name, phone, email, [bonus pay items], type}
 @Employees = Meteor.users
+Meteor.isServer && myLog.startLogging(Employees, {
+  desc: (user) ->
+    return user.profile.name
+  indexOn: {
+    'employee_id': (user) ->
+      return user._id
+  }
+})
 
 # {name, phone, email, [billing_adjustments]}
 @Clients = new Mongo.Collection('Clients')
+Meteor.isServer && myLog.startLogging(Clients, {
+  desc: (client) ->
+    return client.name
+  indexOn: {
+    'client_id': (client) ->
+      return client._id
+  }
+})
 
 # {client_id, employee_id, session_type, unit_bill_rate, unit_pay_rate}
 @BillingRates = new Mongo.Collection('BillingRates')
+Meteor.isServer && myLog.startLogging(BillingRates, {
+  desc: (rate) ->
+    return _.join(' ', Clients.findOne(rate.client_id).name, Employees.findOne(rate.employee_id), rate.session_type)
+})
 
 # {employee_id, client_id, billing_rate, start_time, end_time, units,
 #  notes, [pay_adjustments], [billing_adjustments], total_bill, total_pay}

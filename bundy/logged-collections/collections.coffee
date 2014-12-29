@@ -1,4 +1,4 @@
-@lc = {}
+@lc = @lc || {}
 
 class EventLog
   constructor: (@indexedFields) ->

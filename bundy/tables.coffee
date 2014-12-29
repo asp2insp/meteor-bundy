@@ -39,7 +39,7 @@ TabularTables.EmployeeSessions = new Tabular.Table({
     },
     {data: 'total_pay', title: 'Total'}
   ]
-});
+})
 
 TabularTables.Employees = new Tabular.Table({
   name: 'Employees',
