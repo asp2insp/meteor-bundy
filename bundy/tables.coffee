@@ -16,15 +16,25 @@ TabularTables.Sessions = new Tabular.Table({
         else
           return 'N/A';
     },
-    {data: 'client.name', title: 'Client'},
+    {
+      data: 'client_id',
+      title: 'Client',
+      render: (val) ->
+        return Clients.findOne(val).name
+    },
     {data: 'units', title: 'Units'},
-    {data: 'rate.unit_pay_amount', title: 'Rate'},
+    {
+      data: 'billing_rate',
+      title: 'Rate',
+      render: (rate) ->
+        return rate.unit_pay_rate
+    },
     {
       title: 'Adjustments',
       data: 'pay_adjustments',
       render: (val) ->
         return _.reduce(val, (l, r) ->
-          return l + r.name
+          return l + r.name + ': ' + r.amount + '<br>'
         , '')
     },
     {data: 'total_pay', title: 'Total'}
@@ -37,6 +47,42 @@ TabularTables.Employees = new Tabular.Table({
   columns: [
     {data: 'profile.name', title: 'Name'},
     {data: 'profile.type', title: 'Type'},
-    {data: 'pay_adjustments', title: 'Pay Adjustments', tmpl: Meteor.isClient && Template.adjustmentsCell}
+    {
+      data: 'pay_adjustments',
+      title: 'Pay Adjustments',
+      render: (val) ->
+        return _.join(', ', _.pluck(val, 'name')...)
+    }
+  ]
+})
+
+TabularTables.Clients = new Tabular.Table({
+  name: 'Clients',
+  collection: Clients,
+  pub: 'Clients_withRates',
+  columns: [
+    {
+      data: 'name',
+      title: 'Name',
+      render: (name, type, doc) ->
+        return '<a href="clients/' + doc._id + '">' + name + '</a>'
+    },
+    {
+      data: '_id',
+      title: 'Rates',
+      render: (client_id) ->
+        rates = []
+        BillingRates.find({client_id: client_id}).forEach((rate) ->
+          rates.push(rate.session_type + ': ' + rate.unit_bill_rate)
+        )
+        return _.join('<br>', rates...)
+      ,
+    },
+    {
+      data: 'billing_adjustments',
+      title: 'Billing Adjustments',
+      render: (val) ->
+        return _.join(', ', _.pluck(val, 'name')...)
+    }
   ]
 })

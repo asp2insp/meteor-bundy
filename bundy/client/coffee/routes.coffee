@@ -7,6 +7,12 @@ navRoutes = [
 
   new NavRoute('tutors', 'fa-university')
   new NavRoute('clients', 'fa-users')
+  new NavRoute('clients/:_id', '', {
+    isMainNav: false,
+    template: 'clientDetail',
+    data: () ->
+      return Clients.findOne(this.params._id)
+  })
   new NavRoute('monthly-billing', 'fa-money', {label: 'Monthly Billing'})
   new NavRoute('accounting', 'fa-line-chart')
 

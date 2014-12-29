@@ -31,7 +31,9 @@ logSession = () ->
   session = {}
   session.employee_id = Meteor.userId()
   session.client_id = $('#client').val()
-  session.billing_rate_id = $('#sessiontype').val()
+  rate = BillingRates.findOne($('#sessiontype').val())
+  session.billing_rate = _.pick(rate, ['session_type', 'unit_bill_rate', 'unit_pay_rate'])
+  session.billing_rate.origin_id = rate._id
   session.notes = $('#notes').val()
   day = moment($("#date").val())
   start = moment($("#starttime").val(), 'h:mma')
@@ -84,8 +86,7 @@ conditionsMet = (adj, session) ->
   return currentSession.find(adj.conditions).count() == 1
 
 calculateTotalBill = (session) ->
-  rate = BillingRates.findOne({_id: session.billing_rate_id})
-  session.total_bill = session.units * rate.unit_bill_rate
+  session.total_bill = session.units * session.billing_rate.unit_bill_rate
   session.total_bill += _.reduce(session.billing_adjustments, (sum, adj) ->
     sum = sum || 0
     return sum + adj.amount
@@ -93,8 +94,7 @@ calculateTotalBill = (session) ->
   return session
 
 calculateTotalPay = (session) ->
-  rate = BillingRates.findOne({_id: session.billing_rate_id})
-  session.total_pay = session.units * rate.unit_pay_rate
+  session.total_pay = session.units * session.billing_rate.unit_pay_rate
   session.total_pay += _.reduce(session.billing_adjustments, (sum, adj) ->
     sum = sum || 0
     return sum + adj.amount

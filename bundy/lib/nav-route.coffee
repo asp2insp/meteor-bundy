@@ -6,7 +6,7 @@ class NavRoute
       throw new Error('Must provide a name for each NavRoute')
     unless @config?
       @config = {}
-    {@template, @isMainNav, @label, @path, @parentName, @layoutTemplate, @redirect} = @config
+    {@template, @isMainNav, @label, @path, @parentName, @layoutTemplate, @redirect, @data} = @config
     unless @template?
       @template = @name
     unless @isMainNav?
@@ -61,7 +61,7 @@ class NavRouteList
     for r in @routes
       if r.redirect?
         Router.route(r.path, () ->
-          this.redirect(r.redirect);
+          this.redirect(r.redirect)
         )
       else
         Router.route(r.name, r)

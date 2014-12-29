@@ -7,7 +7,7 @@
 # {client_id, employee_id, session_type, unit_bill_rate, unit_pay_rate}
 @BillingRates = new Mongo.Collection('BillingRates')
 
-# {employee_id, client_id, billing_rate_id, start_time, end_time, units,
+# {employee_id, client_id, billing_rate, start_time, end_time, units,
 #  notes, [pay_adjustments], [billing_adjustments], total_bill, total_pay}
 @Sessions = new Mongo.Collection('Sessions')
 
@@ -50,6 +50,24 @@ if Meteor.isServer
         {
           find: (session) ->
             return BillingRates.find({_id: session.billing_rate_id}, {limit: 1, sort: {_id: 1}})
+        }
+      ]
+    }
+  )
+
+  Meteor.publishComposite("Clients_withRates", (tableName, ids, fields) ->
+    check(tableName, String)
+    check(ids, [String])
+    check(fields, Match.Optional(Object))
+
+    return {
+      find: () ->
+        return Clients.find({_id: {$in: ids}}, {fields: fields});
+      ,
+      children: [
+        {
+          find: (client) ->
+            return BillingRates.find({client_id: client._id}, {sort: {_id: 1}})
         }
       ]
     }
