@@ -1,7 +1,7 @@
 TabularTables = {}
 Meteor.isClient && Template.registerHelper('TabularTables', TabularTables)
 
-TabularTables.Sessions = new Tabular.Table({
+TabularTables.EmployeeSessions = new Tabular.Table({
   name: 'SessionList',
   collection: Sessions,
   pub: 'Sessions_denormalized',
@@ -84,5 +84,45 @@ TabularTables.Clients = new Tabular.Table({
       render: (val) ->
         return _.join(', ', _.pluck(val, 'name')...)
     }
+  ]
+})
+
+TabularTables.ClientSessions = new Tabular.Table({
+  name: 'ClientSessions',
+  collection: Sessions,
+  pub: 'Sessions_denormalized',
+  columns: [
+    {
+      data: 'start_time',
+      title: 'Date',
+      render: (val, type, doc) ->
+        if val instanceof Date
+          return moment(val).calendar()
+        else
+          return 'N/A';
+    },
+    {
+      data: 'employee_id',
+      title: 'Tutor',
+      render: (_id, type, doc) ->
+        employee = Employees.findOne(_id)
+        return '<a href="tutors/' + _id + '">' + employee.profile.name + '</a>'
+    },
+    {data: 'units', title: 'Units'},
+    {
+      data: 'billing_rate',
+      title: 'Rate',
+      render: (rate) ->
+        return rate.unit_bill_rate
+    },
+    {
+      title: 'Adjustments',
+      data: 'billing_adjustments',
+      render: (val) ->
+        return _.reduce(val, (l, r) ->
+          return l + r.name + ': ' + r.amount + '<br>'
+        , '')
+    },
+    {data: 'total_bill', title: 'Total'}
   ]
 })
