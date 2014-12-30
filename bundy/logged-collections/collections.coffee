@@ -1,10 +1,12 @@
 @lc = @lc || {}
+@lc._collections = @lc._collections || {}
 
 class EventLog
   constructor: (@indexedFields) ->
     check(@indexedFields, [String])
 
   startLogging: (collection, options) ->
+    lc._collections[collection._name] = collection
     indexedFields = @indexedFields
     collection.after.insert((user_id, doc) ->
       ev = _.pick(doc, indexedFields)
@@ -53,6 +55,11 @@ class EventLog
     )
 
 @lc.EventLog = EventLog
+
+Meteor.isServer && Meteor.publish('lc.EventLog', () ->
+  return lc._EventLog.find()
+)
+Meteor.isClient && Meteor.subscribe('lc.EventLog')
 
 # {ts, indexedFields..., action, type, desc, user_id, rollback}
 @lc._EventLog = new Mongo.Collection('lc.EventLog')

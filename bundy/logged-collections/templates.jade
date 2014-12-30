@@ -1,6 +1,3 @@
 template(name="lc_eventsList")
   #lc_eventsList
-    +tabular(table=lc.EventTable class="table table-condensed")
-
-template(name="lc_eventsListControls")
-  span#lc_eventsListControls
+    +tabular(table=lc.EventTable selector=makeSelector class="table table-condensed")
