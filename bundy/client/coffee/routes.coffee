@@ -6,6 +6,12 @@ navRoutes = [
   new NavRoute('log', 'fa-plus', {parentName: 'sessions'})
 
   new NavRoute('tutors', 'fa-university')
+  new NavRoute('tutors/:_id', '', {
+    isMainNav: false,
+    template: 'employeeDetail',
+    data: () ->
+      return Employees.findOne(this.params._id)
+  })
   new NavRoute('clients', 'fa-users')
   new NavRoute('clients/:_id', '', {
     isMainNav: false,
@@ -15,6 +21,7 @@ navRoutes = [
   })
   new NavRoute('monthly-billing', 'fa-money', {label: 'Monthly Billing'})
   new NavRoute('accounting', 'fa-line-chart')
+  new NavRoute('action-history', 'fa-clock-o', {label: 'Action History'})
 
   new NavRoute('profile', '', {isMainNav: false})
   new NavRoute('edit-profile', '', {isMainNav: false})

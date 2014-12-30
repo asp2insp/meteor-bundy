@@ -1,8 +1,8 @@
-template(name="clientDetail")
+template(name="employeeDetail")
   #page-wrapper
     .row
       .col-lg-12
-        h1.page-header {{name}}
+        h1.page-header {{profile.name}}
     .row
       .col-lg-8
         .panel.panel-default
@@ -25,13 +25,13 @@ template(name="clientDetail")
                   li
                     a(href="#") Separated link
           .panel-body
-            +tabular(table=TabularTables.ClientSessions selector=clientSelector class="table table-striped table-bordered table-condensed")
+            +tabular(table=TabularTables.EmployeeSessions selector=employeeSelector class="table table-striped table-bordered table-condensed")
         .panel.panel-default
           .panel-heading
             i.fa.fa-clock-o.fa-fw
             | Recent Updates
           .panel-body
-            +lc_eventsList(client_id=_id)
+            +lc_eventsList(employee_id=_id)
 
       .col-lg-4
         .panel.panel-default
@@ -39,7 +39,7 @@ template(name="clientDetail")
             i.fa.fa-money.fa-fw
             | Current Rates
           .panel-body
-            +sidebarRatesWithEmployee(rates)
+            +sidebarRatesWithClient(rates)
       .col-lg-4
         .panel.panel-default
           .panel-heading
@@ -48,22 +48,12 @@ template(name="clientDetail")
           .panel-body
             +sidebarAdjustments(billing_adjustments)
 
-template(name="sidebarRatesWithEmployee")
+template(name="sidebarRatesWithClient")
   .list-group
     each this
       a.list-group-item(href="rates/{{_id}}")
         .row
           .col-sm-12
-            | {{session_type}} with {{employeeName}}
+            | {{session_type}} with {{clientName}}
             span.pull-right.text-muted.small
               | {{unit_bill_rate}}
-
-template(name="sidebarAdjustments")
-  .list-group
-    each this
-      a.list-group-item(href="#")
-        .row
-          .col-sm-12
-            | {{name}}
-            span.pull-right.text-muted.small
-              | {{amount}}

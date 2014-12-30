@@ -45,7 +45,12 @@ TabularTables.Employees = new Tabular.Table({
   name: 'Employees',
   collection: Employees,
   columns: [
-    {data: 'profile.name', title: 'Name'},
+    {
+      data: 'profile.name',
+      title: 'Name',
+      render: (name, type, doc) ->
+        return '<a href="tutors/' + doc._id + '">' + name + '</a>'
+    },
     {data: 'profile.type', title: 'Type'},
     {
       data: 'pay_adjustments',

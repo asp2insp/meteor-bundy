@@ -1,0 +1,8 @@
+template(name="actionHistory")
+  #page-wrapper
+    .row
+      .col-lg-12
+        h1.page-header Action History
+    .row
+      .col-lg-12
+        +lc_eventsList(user_id=currentUser._id)
