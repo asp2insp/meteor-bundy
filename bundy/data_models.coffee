@@ -1,24 +1,33 @@
 Meteor.isServer && myLog = new lc.EventLog(['client_id', 'employee_id'])
 
 @BillingPeriods = [
-      {name: 'January', is_pre_paid: false},
-      {name: 'February', is_pre_paid: false},
-      {name: 'March', is_pre_paid: false},
-      {name: 'April', is_pre_paid: false},
-      {name: 'May', is_pre_paid: false},
-      {name: 'Summer (June/July)', is_pre_paid: true},
-      {name: 'August', is_pre_paid: false},
-      {name: 'September', is_pre_paid: false},
-      {name: 'October', is_pre_paid: false},
-      {name: 'November', is_pre_paid: false},
-      {name: 'December', is_pre_paid: false},
+      {name: 'January', is_pre_paid: false, month_range: [1]},
+      {name: 'February', is_pre_paid: false, month_range: [2]},
+      {name: 'March', is_pre_paid: false, month_range: [3]},
+      {name: 'April', is_pre_paid: false, month_range: [4]},
+      {name: 'May', is_pre_paid: false, month_range: [5]},
+      {name: 'Summer (June/July)', is_pre_paid: true, month_range: [6,7]},
+      {name: 'August', is_pre_paid: false, month_range: [8]},
+      {name: 'September', is_pre_paid: false, month_range: [9]},
+      {name: 'October', is_pre_paid: false, month_range: [10]},
+      {name: 'November', is_pre_paid: false, month_range: [11]},
+      {name: 'December', is_pre_paid: false, month_range: [12]},
 ]
+
+# returns index into @BillingPeriods
 @findBillingPeriod = (timestamp) ->
   month = moment(timestamp).format('MMMM')
   return lodash.findIndex(BillingPeriods, (val) ->
     return _s.include(val.name, month)
   )
 
+# Returns {start: Date, end: Date}
+@findDateRangeForBillingPeriod = (index) ->
+  month_range = BillingPeriods[index].month_range
+  return {
+    start: moment(month_range[0], 'M').toDate(),
+    end: moment(month_range[month_range.length-1], 'M').add(1, 'month').toDate()
+  }
 
 # {name, phone, email, [bonus pay items], type}
 @Employees = Meteor.users
@@ -83,8 +92,13 @@ if Meteor.isServer
       this.ready()
   )
 
+  userIsAdmin = (userId) ->
+    return Meteor.users.findOne(userId).isAdmin
+
   Meteor.publish("clients", () ->
     if this.userId
+      if userIsAdmin(this.userId)
+        return Clients.find()
       ids = []
       BillingRates.find({employee_id: this.userId}).forEach((rate) ->
         ids.push(rate.client_id)
@@ -94,6 +108,8 @@ if Meteor.isServer
 
   Meteor.publish("rates", () ->
     if this.userId
+      if userIsAdmin(this.userId)
+        return BillingRates.find()
       return BillingRates.find({employee_id: this.userId})
   )
 

@@ -1,32 +1,117 @@
-template(name="monthlyBilling")
+template(name="billingHeader")
+  .row
+    .col-lg-12
+      h1.page-header Monthly Billing
+        .pull-right
+          #monthdropdown.btn-group
+            button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
+              span#monthtext Month Of...
+              span.caret
+            ul.dropdown-menu.pull-right(role="menu")
+              each months
+                li
+                  a(href="#") {{name}}
+          | {{currentYear}}
+
+template(name="approvePay")
   #page-wrapper
+    +billingHeader
     .row
-      .col-lg-12
-        h1.page-header Monthly Billing
-          .pull-right
-            #monthdropdown.btn-group
-              button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
-                span#monthtext Month Of...
-                span.caret
-              ul.dropdown-menu.pull-right(role="menu")
-                each months
-                  li
-                    a(href="#"){{name}}
-            | {{currentYear}}
+      .col-lg-12.text-center
+        +billingSteps
     .row
       .col-lg-6
         .panel.panel-default
           .panel-heading
-            | To Do
+            | Unreviewed Employees
           .panel-body
             .row
               .col-md-12
-                +tabular(table=TabularTables.BillingClients)
+                +tabular(table=TabularTables.BillingEmployees selector=unreviewedEmployeesSelector class="table table-condensed")
       .col-lg-6
         .panel.panel-default
           .panel-heading
-            | Done
+            | Reviewed Employees
           .panel-body
             .row
               .col-md-12
-                +tabular(table=TabularTables.BillingClients)
+                +tabular(table=TabularTables.BillingEmployees selector=reviewedEmployeesSelector class="table table-condensed")
+
+template(name="approveBill")
+  #page-wrapper
+    +billingHeader
+    .row
+      .col-lg-12.text-center
+        +billingSteps
+    .row
+      .col-lg-6
+        .panel.panel-default
+          .panel-heading
+            | Unreviewed Clients
+          .panel-body
+            .row
+              .col-md-12
+                +tabular(table=TabularTables.BillingClients selector=unreviewedClientsSelector class="table table-condensed")
+      .col-lg-6
+        .panel.panel-default
+          .panel-heading
+            | Reviewed Clients
+          .panel-body
+            .row
+              .col-md-12
+                +tabular(table=TabularTables.BillingClients selector=reviewedClientsSelector class="table table-condensed")
+
+template(name="sendInvoices")
+  #page-wrapper
+    +billingHeader
+    .row
+      .col-lg-12.text-center
+        +billingSteps
+    .row
+      .col-lg-6
+        .panel.panel-default
+          .panel-heading
+            | Approved Invoices
+          .panel-body
+            .row
+              .col-md-12
+      .col-lg-6
+        .panel.panel-default
+          .panel-heading
+            | Sent Invoices
+          .panel-body
+            .row
+              .col-md-12
+
+template(name="sendPay")
+  #page-wrapper
+    +billingHeader
+    .row
+      .col-lg-12.text-center
+        +billingSteps
+    .row
+      .col-lg-6
+        .panel.panel-default
+          .panel-heading
+            | Approved Paystubs
+          .panel-body
+            .row
+              .col-md-12
+      .col-lg-6
+        .panel.panel-default
+          .panel-heading
+            | Sent Paystubs
+          .panel-body
+            .row
+              .col-md-12
+
+template(name="billingSteps")
+  ul.pagination.center
+    li
+      a.billing-step(href="approve-pay") Approve Paystubs
+    li
+      a.billing-step(href="approve-bill") Approve Invoices
+    li
+      a.billing-step(href="send-invoices") Send Invoices
+    li
+      a.billing-step(href="send-pay") Send Pay Stubs

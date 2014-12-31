@@ -155,6 +155,7 @@ TabularTables.BillingClients = new Tabular.Table({
     {
       data: 'name',
       title: 'Name',
+      sortable: false,
       render: (name, type, doc) ->
         return '<a href="monthly-billing/' + doc._id + '">' + name + '</a>'
     }
@@ -163,13 +164,14 @@ TabularTables.BillingClients = new Tabular.Table({
 
 TabularTables.BillingEmployees = new Tabular.Table({
   name: 'BillingEmployees',
-  collection: Clients,
+  collection: Employees,
   pub: 'Employees_withPayStubs',
   dom: 't',
   columns: [
     {
-      data: 'name',
+      data: 'profile.name',
       title: 'Name',
+      sortable: false,
       render: (name, type, doc) ->
         return '<a href="monthly-pay/' + doc._id + '">' + name + '</a>'
     }

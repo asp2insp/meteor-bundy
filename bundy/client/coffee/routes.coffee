@@ -19,7 +19,10 @@ navRoutes = [
     data: () ->
       return Clients.findOne(this.params._id)
   })
-  new NavRoute('monthly-billing', 'fa-money', {label: 'Monthly Billing'})
+  new NavRoute('approve-pay', 'fa-money', {label: 'Monthly Billing'})
+  new NavRoute('approve-bill', '', {isMainNav: false})
+  new NavRoute('send-invoices', '', {isMainNav: false})
+  new NavRoute('send-pay', '', {isMainNav: false})
   new NavRoute('accounting', 'fa-line-chart')
   new NavRoute('action-history', 'fa-clock-o', {label: 'Action History'})
 
@@ -47,7 +50,7 @@ demos = [
 
 finalRoutes.push navRoutes...
 
-finalRoutes.push demos...
+#finalRoutes.push demos...
 
 navRouteList = new NavRouteList(finalRoutes)
 
