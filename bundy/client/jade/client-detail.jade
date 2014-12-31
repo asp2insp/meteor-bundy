@@ -4,7 +4,7 @@ template(name="clientDetail")
       .col-lg-12
         h1.page-header {{name}}
     .row
-      .col-lg-8
+      .col-lg-9
         .panel.panel-default
           .panel-heading
             i.fa.fa-pencil-o.fa-fw
@@ -33,14 +33,14 @@ template(name="clientDetail")
           .panel-body
             +lc_eventsList(client_id=_id)
 
-      .col-lg-4
+      .col-lg-3
         .panel.panel-default
           .panel-heading
             i.fa.fa-money.fa-fw
             | Current Rates
           .panel-body
             +sidebarRatesWithEmployee(rates)
-      .col-lg-4
+      .col-lg-3
         .panel.panel-default
           .panel-heading
             i.fa.fa-edit.fa-fw

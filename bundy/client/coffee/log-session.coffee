@@ -23,7 +23,22 @@ Template.log.events({
   'submit #log-session': (e, t) ->
     e.preventDefault()
     logSession()
+    $('#log-session')[0].reset()
+    displaySuccessAlert()
 })
+
+Template.log.rendered = () ->
+  $(this.findAll('.clockpicker')).clockpicker({
+    #placement: 'top',
+    autoclose: false,
+    twelvehour: true,
+    donetext: 'Done'
+  })
+  $('#successalert').hide()
+
+displaySuccessAlert = () ->
+  $('#successalert').show()
+  $('#successalert').fadeOut(1600)
 
 # {employee_id, client_id, billing_rate_id, start_time, end_time, units,
 #  notes, [pay_adjustments], [billing_adjustments], total_bill, total_pay}
@@ -95,7 +110,7 @@ calculateTotalBill = (session) ->
 
 calculateTotalPay = (session) ->
   session.total_pay = session.units * session.billing_rate.unit_pay_rate
-  session.total_pay += _.reduce(session.billing_adjustments, (sum, adj) ->
+  session.total_pay += _.reduce(session.pay_adjustments, (sum, adj) ->
     sum = sum || 0
     return sum + adj.amount
   , 0)

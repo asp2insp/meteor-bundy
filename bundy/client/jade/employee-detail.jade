@@ -4,7 +4,7 @@ template(name="employeeDetail")
       .col-lg-12
         h1.page-header {{profile.name}}
     .row
-      .col-lg-8
+      .col-lg-9
         .panel.panel-default
           .panel-heading
             i.fa.fa-pencil-o.fa-fw
@@ -33,20 +33,20 @@ template(name="employeeDetail")
           .panel-body
             +lc_eventsList(employee_id=_id)
 
-      .col-lg-4
+      .col-lg-3
         .panel.panel-default
           .panel-heading
             i.fa.fa-money.fa-fw
-            | Current Rates
+            | Current Pay Rates
           .panel-body
             +sidebarRatesWithClient(rates)
-      .col-lg-4
+      .col-lg-3
         .panel.panel-default
           .panel-heading
             i.fa.fa-edit.fa-fw
-            | Billing Adjustments
+            | Pay Adjustments
           .panel-body
-            +sidebarAdjustments(billing_adjustments)
+            +sidebarAdjustments(pay_adjustments)
 
 template(name="sidebarRatesWithClient")
   .list-group
@@ -56,4 +56,4 @@ template(name="sidebarRatesWithClient")
           .col-sm-12
             | {{session_type}} with {{clientName}}
             span.pull-right.text-muted.small
-              | {{unit_bill_rate}}
+              | {{unit_pay_rate}}

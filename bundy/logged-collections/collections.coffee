@@ -38,7 +38,7 @@ class EventLog
       ev.rollback = {action: '$insert', selector: null, payload: doc}
       lc._EventLog.insert(ev)
     )
-    collection.after.update((userId, doc, fieldNames, modifier, options) ->
+    collection.after.update((user_id, doc, fieldNames, modifier, options) ->
       ev = _.pick(doc, indexedFields)
       ev.action = 'update'
       ev.collection = collection._name

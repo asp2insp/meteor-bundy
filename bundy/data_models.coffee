@@ -1,5 +1,25 @@
 Meteor.isServer && myLog = new lc.EventLog(['client_id', 'employee_id'])
 
+@BillingPeriods = [
+      {name: 'January', is_pre_paid: false},
+      {name: 'February', is_pre_paid: false},
+      {name: 'March', is_pre_paid: false},
+      {name: 'April', is_pre_paid: false},
+      {name: 'May', is_pre_paid: false},
+      {name: 'Summer (June/July)', is_pre_paid: true},
+      {name: 'August', is_pre_paid: false},
+      {name: 'September', is_pre_paid: false},
+      {name: 'October', is_pre_paid: false},
+      {name: 'November', is_pre_paid: false},
+      {name: 'December', is_pre_paid: false},
+]
+@findBillingPeriod = (timestamp) ->
+  month = moment(timestamp).format('MMMM')
+  return lodash.findIndex(BillingPeriods, (val) ->
+    return _s.include(val.name, month)
+  )
+
+
 # {name, phone, email, [bonus pay items], type}
 @Employees = Meteor.users
 Meteor.isServer && myLog.startLogging(Employees, {
@@ -22,7 +42,7 @@ Meteor.isServer && myLog.startLogging(Clients, {
   }
 })
 
-# {client_id, employee_id, session_type, unit_bill_rate, unit_pay_rate}
+# {client_id, employee_id, session_type, unit_bill_rate, unit_pay_rate, pre_paid}
 @BillingRates = new Mongo.Collection('BillingRates')
 Meteor.isServer && myLog.startLogging(BillingRates, {
   desc: (rate) ->
@@ -61,6 +81,24 @@ if Meteor.isServer
                                }})
     else
       this.ready()
+  )
+
+  Meteor.publish("clients", () ->
+    if this.userId
+      ids = []
+      BillingRates.find({employee_id: this.userId}).forEach((rate) ->
+        ids.push(rate.client_id)
+      )
+      return Clients.find({_id: {$in: ids}})
+  )
+
+  Meteor.publish("rates", () ->
+    if this.userId
+      return BillingRates.find({employee_id: this.userId})
+  )
+
+  Meteor.publish("employee_types", () ->
+    return EmployeeTypes.find()
   )
 
   Meteor.publishComposite("Sessions_denormalized", (tableName, ids, fields) ->
@@ -107,5 +145,43 @@ if Meteor.isServer
     }
   )
 
+  Meteor.publishComposite("Clients_withInvoices", (tableName, ids, fields) ->
+    check(tableName, String)
+    check(ids, [String])
+    check(fields, Match.Optional(Object))
+
+    return {
+      find: () ->
+        return Clients.find({_id: {$in: ids}}, {fields: fields});
+      ,
+      children: [
+        {
+          find: (client) ->
+            return ClientInvoices.find({client_id: client._id})
+        }
+      ]
+    }
+  )
+  Meteor.publishComposite("Employees_withPayStubs", (tableName, ids, fields) ->
+    check(tableName, String)
+    check(ids, [String])
+    check(fields, Match.Optional(Object))
+
+    return {
+      find: () ->
+        return Employees.find({_id: {$in: ids}}, {fields: fields});
+      ,
+      children: [
+        {
+          find: (employee) ->
+            return PayStubs.find({employee_id: employee._id})
+        }
+      ]
+    }
+  )
+
 if Meteor.isClient
   Meteor.subscribe("userData")
+  Meteor.subscribe("clients")
+  Meteor.subscribe("rates")
+  Meteor.subscribe("employee_types")

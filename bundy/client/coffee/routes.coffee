@@ -34,7 +34,6 @@ navRoutes = [
 
 demos = [
   new NavRoute('dashboard', 'fa-dashboard')
-  new NavRoute('tables', 'fa-table')
   new NavRoute('forms', 'fa-edit')
   new NavRoute('ui-elements', 'fa-wrench', {label: 'UI Elements'})
   new NavRoute('buttons', '', {parentName: 'ui-elements'})
@@ -48,7 +47,7 @@ demos = [
 
 finalRoutes.push navRoutes...
 
-#finalRoutes.push demos...
+finalRoutes.push demos...
 
 navRouteList = new NavRouteList(finalRoutes)
 

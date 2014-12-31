@@ -30,12 +30,12 @@ template(name="log")
           .form-group.input-group
             span.input-group-addon
               i.fa.fa-clock-o
-            input.form-control#starttime(type="text", placeholder="Start Time")
+            input.form-control.clockpicker#starttime(type="text", placeholder="Start Time")
         .col-md-4
           .form-group.input-group
             span.input-group-addon
               i.fa.fa-clock-o
-            input.form-control#endtime(type="text", placeholder="End Time")
+            input.form-control.clockpicker#endtime(type="text", placeholder="End Time")
       .row
         .col-md-12
           .form-group.input-group
@@ -46,3 +46,10 @@ template(name="log")
         .col-md-10
         .col-md-2
           button.btn.btn-success.pull-right(type="submit") Record
+      .row(style='margin-top: 25px;')
+        .col-md-12
+          #successalert.alert.alert-success.alert-dismissible(role="alert")
+            button.close(type="button" data-dismiss="alert")
+              span(aria-hidden="true") &times;
+              span.sr-only Close
+            | Successfully recorded session

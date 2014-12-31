@@ -1,0 +1,32 @@
+template(name="monthlyBilling")
+  #page-wrapper
+    .row
+      .col-lg-12
+        h1.page-header Monthly Billing
+          .pull-right
+            #monthdropdown.btn-group
+              button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
+                span#monthtext Month Of...
+                span.caret
+              ul.dropdown-menu.pull-right(role="menu")
+                each months
+                  li
+                    a(href="#"){{name}}
+            | {{currentYear}}
+    .row
+      .col-lg-6
+        .panel.panel-default
+          .panel-heading
+            | To Do
+          .panel-body
+            .row
+              .col-md-12
+                +tabular(table=TabularTables.BillingClients)
+      .col-lg-6
+        .panel.panel-default
+          .panel-heading
+            | Done
+          .panel-body
+            .row
+              .col-md-12
+                +tabular(table=TabularTables.BillingClients)

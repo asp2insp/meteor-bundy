@@ -22,6 +22,12 @@ TabularTables.EmployeeSessions = new Tabular.Table({
       render: (val) ->
         return Clients.findOne(val).name
     },
+    {
+      data: 'billing_rate',
+      title: 'Subject',
+      render: (rate) ->
+        return rate.session_type
+    },
     {data: 'units', title: 'Units'},
     {
       data: 'billing_rate',
@@ -37,7 +43,8 @@ TabularTables.EmployeeSessions = new Tabular.Table({
           return l + r.name + ': ' + r.amount + '<br>'
         , '')
     },
-    {data: 'total_pay', title: 'Total'}
+    {data: 'total_pay', title: 'Total'},
+    {data: 'notes', title: 'Notes'}
   ]
 })
 
@@ -113,6 +120,12 @@ TabularTables.ClientSessions = new Tabular.Table({
         employee = Employees.findOne(_id)
         return '<a href="tutors/' + _id + '">' + employee.profile.name + '</a>'
     },
+    {
+      data: 'billing_rate',
+      title: 'Subject',
+      render: (rate) ->
+        return rate.session_type
+    },
     {data: 'units', title: 'Units'},
     {
       data: 'billing_rate',
@@ -128,6 +141,37 @@ TabularTables.ClientSessions = new Tabular.Table({
           return l + r.name + ': ' + r.amount + '<br>'
         , '')
     },
-    {data: 'total_bill', title: 'Total'}
+    {data: 'total_bill', title: 'Total'},
+    {data: 'notes', title: 'Notes'}
+  ]
+})
+
+TabularTables.BillingClients = new Tabular.Table({
+  name: 'BillingClients',
+  collection: Clients,
+  pub: 'Clients_withInvoices',
+  dom: 't',
+  columns: [
+    {
+      data: 'name',
+      title: 'Name',
+      render: (name, type, doc) ->
+        return '<a href="monthly-billing/' + doc._id + '">' + name + '</a>'
+    }
+  ]
+})
+
+TabularTables.BillingEmployees = new Tabular.Table({
+  name: 'BillingEmployees',
+  collection: Clients,
+  pub: 'Employees_withPayStubs',
+  dom: 't',
+  columns: [
+    {
+      data: 'name',
+      title: 'Name',
+      render: (name, type, doc) ->
+        return '<a href="monthly-pay/' + doc._id + '">' + name + '</a>'
+    }
   ]
 })
