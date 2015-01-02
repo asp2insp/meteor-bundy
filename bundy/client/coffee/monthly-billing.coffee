@@ -11,6 +11,25 @@ Template.approvePay.helpers({
   unreviewedEmployeesSelector: () ->
     return {_id: {$nin: Session.get('reviewedEmployees')}}
 })
+
+Template.approveEmployee.helpers({
+  employeeBillingSelector: () ->
+    date_range = findDateRangeForBillingPeriod(Session.get('billingPeriodIndex'))
+    return {
+      employee_id: this?._id,
+      start_time: {$gte: date_range?.start, $lt: date_range?.end}
+    }
+})
+
+Template.approveClient.helpers({
+  clientBillingSelector: () ->
+    date_range = findDateRangeForBillingPeriod(Session.get('billingPeriodIndex'))
+    return {
+      client_id: this?._id,
+      start_time: {$gte: date_range?.start, $lt: date_range?.end}
+    }
+})
+
 Template.approveBill.helpers({
   reviewedClientsSelector: () ->
     return {_id: {$in: Session.get('reviewedClients')}}
@@ -43,12 +62,25 @@ Tracker.autorun(() ->
 Template.billingHeader.events({
   'click #monthdropdown a': (e, t) ->
     e.preventDefault()
-    selectedMonth = $(e.currentTarget).text()
-    selectBillingPeriod(periodName)
+    selectBillingPeriod($(e.currentTarget).text())
+})
+
+Template.approveClient.events({
+  'click .edit-session': (e, t) ->
+    Session.set('editSessionId', $(e.currentTarget).data('id'))
+})
+
+Template.approveEmployee.events({
+  'click .edit-session': (e, t) ->
+    Session.set('editSessionId', $(e.currentTarget).data('id'))
 })
 
 Template.billingHeader.rendered = () ->
-  selectBillingPeriod(BillingPeriods[findBillingPeriod(Date.now())].name)
+  index = Session.get('billingPeriodIndex')
+  unless index?
+    selectBillingPeriod(BillingPeriods[findBillingPeriod(Date.now())].name)
+  else
+    $('#monthtext').text(BillingPeriods[index].name)
 
 Template.billingSteps.rendered = () ->
   _.forEach(this.findAll('a.billing-step'), (a) ->

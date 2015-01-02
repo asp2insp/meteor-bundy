@@ -20,7 +20,19 @@ navRoutes = [
       return Clients.findOne(this.params._id)
   })
   new NavRoute('approve-pay', 'fa-money', {label: 'Monthly Billing'})
+  new NavRoute('approve-pay/:_id', '', {
+    isMainNav: false,
+    template: 'approveEmployee',
+    data: () ->
+      return Employees.findOne(this.params._id)
+  })
   new NavRoute('approve-bill', '', {isMainNav: false})
+  new NavRoute('approve-bill/:_id', '', {
+    isMainNav: false,
+    template: 'approveClient',
+    data: () ->
+      return Clients.findOne(this.params._id)
+  })
   new NavRoute('send-invoices', '', {isMainNav: false})
   new NavRoute('send-pay', '', {isMainNav: false})
   new NavRoute('accounting', 'fa-line-chart')

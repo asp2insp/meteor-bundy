@@ -1,0 +1,30 @@
+template(name="editSession")
+  // Modal
+  #editsessionmodal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type="button", data-dismiss="modal", aria-hidden="true") &#215;
+          h4#myModalLabel.modal-title Edit Session
+        .modal-body
+          form#editsessionform(role="form")
+            .row
+              .col-md-12
+                .form-group
+                  label Notes
+                  input#notes.form-control(type="text")
+                  p.help-block Notes on the session content
+            .row
+              .col-md-6
+                .form-group
+                  label Total Bill
+                  input#total_bill.form-control(type="number")
+                  p.help-block Total amount to be billed to the client
+              .col-md-6
+                .form-group
+                  label Total Pay
+                  input#total_pay.form-control(type="number")
+                  p.help-block Total amount to be payed to the tutor
+        .modal-footer
+          button.btn.btn-default(type="button", data-dismiss="modal") Cancel
+          button.btn.btn-primary(type="button") Save
