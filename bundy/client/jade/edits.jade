@@ -9,22 +9,32 @@ template(name="editSession")
         .modal-body
           form#editsessionform(role="form")
             .row
-              .col-md-12
+              .col-md-6
+                label Start Time
+                  input#start_time.form-control(type="datetime-local")
+              .col-md-6
+                label End Time
+                  input#end_time.form-control(type="datetime-local")
+            .row
+              .col-md-4
+                label Total Units
+                  input#units.form-control(type="number")
+              .col-md-8
                 .form-group
                   label Notes
                   input#notes.form-control(type="text")
-                  p.help-block Notes on the session content
             .row
               .col-md-6
                 .form-group
                   label Total Bill
                   input#total_bill.form-control(type="number")
-                  p.help-block Total amount to be billed to the client
               .col-md-6
                 .form-group
                   label Total Pay
                   input#total_pay.form-control(type="number")
-                  p.help-block Total amount to be payed to the tutor
         .modal-footer
           button.btn.btn-default(type="button", data-dismiss="modal") Cancel
-          button.btn.btn-primary(type="button") Save
+          button#savebutton.btn.btn-primary(type="button") Save
+
+//- # {employee_id, client_id, billing_rate,
+//- #  , [pay_adjustments], [billing_adjustments], , }

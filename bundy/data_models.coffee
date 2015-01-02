@@ -124,7 +124,7 @@ if Meteor.isServer
 
     return {
       find: () ->
-        return Sessions.find({_id: {$in: ids}}, {fields: fields});
+        return Sessions.find({_id: {$in: ids}});
       ,
       children: [
         {
