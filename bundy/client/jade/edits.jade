@@ -7,34 +7,61 @@ template(name="editSession")
           button.close(type="button", data-dismiss="modal", aria-hidden="true") &#215;
           h4#myModalLabel.modal-title Edit Session
         .modal-body
-          form#editsessionform(role="form")
-            .row
-              .col-md-6
-                label Start Time
-                  input#start_time.form-control(type="datetime-local")
-              .col-md-6
-                label End Time
-                  input#end_time.form-control(type="datetime-local")
-            .row
-              .col-md-4
-                label Total Units
-                  input#units.form-control(type="number")
-              .col-md-8
-                .form-group
-                  label Notes
-                  input#notes.form-control(type="text")
-            .row
-              .col-md-6
-                .form-group
-                  label Total Bill
-                  input#total_bill.form-control(type="number")
-              .col-md-6
-                .form-group
-                  label Total Pay
-                  input#total_pay.form-control(type="number")
+          .row
+            .col-md-6
+              label Start Time
+                input#start_time.form-control(type="datetime-local")
+            .col-md-6
+              label End Time
+                input#end_time.form-control(type="datetime-local")
+          .row
+            .col-md-4
+              label Total Units
+                input#units.form-control(type="number")
+            .col-md-8
+              .form-group
+                label Notes
+                input#notes.form-control(type="text")
+          .row
+            .col-md-6#pay_adjustments
+              label Pay Adjustments
+              +editAdjustments(key="editSession.pay_adjustments")
+            .col-md-6#billing_adjustments
+              label Billing Adjustments
+              +editAdjustments(key="editSession.billing_adjustments")
+          .row
+            .col-md-6
+              .form-group
+                label Total Pay
+                input#total_pay.form-control(type="number")
+            .col-md-6
+              .form-group
+                label Total Bill
+                input#total_bill.form-control(type="number")
         .modal-footer
+          button#deletebutton.btn.btn-danger(type="button", data-dismiss="modal") Delete
           button.btn.btn-default(type="button", data-dismiss="modal") Cancel
-          button#savebutton.btn.btn-primary(type="button") Save
+          button#savebutton.btn.btn-primary(type="button" data-dismiss="modal") Save
 
-//- # {employee_id, client_id, billing_rate,
-//- #  , [pay_adjustments], [billing_adjustments], , }
+
+template(name="editAdjustments")
+  .panel.panel-default
+    .panel-body
+      form.addform(role="form")
+        table.table
+          each getAdjustments
+            tr
+              td {{name}}
+              td {{amount}}
+              td
+                a.remove(href="#" data-name=name)
+                  i.fa.fa-times.text-danger
+          tr
+            td
+              input.form-control.input-xs.name(type="text" size="10")
+            td
+              input.form-control.input-xs.amount(type="text" size="3")
+            td
+              button.btn.btn-xs.btn-primary Add
+//- # {employee_id, client_id, billing_rate,}
+

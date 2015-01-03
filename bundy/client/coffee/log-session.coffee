@@ -71,7 +71,7 @@ logSession = () ->
   Sessions.insert(session)
 
 
-calculateUnits = (session) ->
+@calculateUnits = (session) ->
   start = moment(session.start_time)
   end = moment(session.end_time)
   session.units = moment.duration(end.diff(start)).asHours()
@@ -100,7 +100,7 @@ conditionsMet = (adj, session) ->
   currentSession.insert(session)
   return currentSession.find(adj.conditions).count() == 1
 
-calculateTotalBill = (session) ->
+@calculateTotalBill = (session) ->
   session.total_bill = session.units * session.billing_rate.unit_bill_rate
   session.total_bill += _.reduce(session.billing_adjustments, (sum, adj) ->
     sum = sum || 0
@@ -108,7 +108,7 @@ calculateTotalBill = (session) ->
   , 0)
   return session
 
-calculateTotalPay = (session) ->
+@calculateTotalPay = (session) ->
   session.total_pay = session.units * session.billing_rate.unit_pay_rate
   session.total_pay += _.reduce(session.pay_adjustments, (sum, adj) ->
     sum = sum || 0

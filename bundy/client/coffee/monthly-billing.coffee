@@ -40,7 +40,7 @@ Template.approveBill.helpers({
 # Update the list of reviewed employees
 Tracker.autorun(() ->
   billingPeriod = Session.get('billingPeriodIndex')
-  date_range = findDateRangeForBillingPeriod?(billingPeriod)
+  date_range = findDateRangeForBillingPeriod?(billingPeriod) || {}
   reviewedEmployees = []
   PayStubs?.find({pay_date: {$gte: date_range.start, $lt: date_range.end}}).forEach((stub) ->
     reviewedEmployees.push(stub.employee_id)
@@ -51,10 +51,10 @@ Tracker.autorun(() ->
 # Update the list of reviewed clients
 Tracker.autorun(() ->
   billingPeriod = Session.get('billingPeriodIndex')
-  date_range = findDateRangeForBillingPeriod?(billingPeriod)
+  date_range = findDateRangeForBillingPeriod?(billingPeriod) || {}
   reviewedClients = []
-  ClientInvoices?.find({date_issued: {$gte: date_range.start, $lt: date_range.end}}).forEach((stub) ->
-    reviewedClients.push(stub.employee_id)
+  ClientInvoices?.find({date_issued: {$gte: date_range.start, $lt: date_range.end}}).forEach((invoice) ->
+    reviewedClients.push(invoice.client_id)
   )
   Session.set('reviewedClients', reviewedClients)
 )
@@ -67,13 +67,40 @@ Template.billingHeader.events({
 
 Template.approveClient.events({
   'click .edit-session': (e, t) ->
-    Session.set('editSessionId', $(e.currentTarget).data('id'))
+    Session.set('editSession', Sessions.findOne($(e.currentTarget).data('id')))
+  'click .approve': (e, t) ->
+    selector = getHelper('clientBillingSelector', t)()
+    getIdsForTable('BillingClientSessions', selector).done(() ->
+      Meteor.call('createInvoice', this, Session.get('billingPeriodIndex'), (error, result) ->
+        if error?
+          console.log(error)
+        else
+          Router.go('/approve-bill')
+      )
+    ).fail(() ->
+      console.log(this) # TODO: replace with visible error
+    )
 })
 
 Template.approveEmployee.events({
   'click .edit-session': (e, t) ->
-    Session.set('editSessionId', $(e.currentTarget).data('id'))
+    Session.set('editSession', Sessions.findOne($(e.currentTarget).data('id')))
+  'click .approve': (e, t) ->
+    selector = getHelper('employeeBillingSelector', t)()
+    getIdsForTable('BillingEmployeeSessions', selector).done(() ->
+      Meteor.call('createPayStub', this, Session.get('billingPeriodIndex'), (error, result) ->
+        if error?
+          console.log(error)
+        else
+          Router.go('/approve-pay')
+      )
+    ).fail(() ->
+      console.log(this) # TODO: replace with visible error
+    )
 })
+
+@getHelper = (helperName, tInst) ->
+  return _.bind(tInst.view.template.__helpers[' ' + helperName], tInst.data)
 
 Template.billingHeader.rendered = () ->
   index = Session.get('billingPeriodIndex')

@@ -14,6 +14,10 @@ Meteor.isServer && myLog = new lc.EventLog(['client_id', 'employee_id'])
       {name: 'December', is_pre_paid: false, month_range: [12]},
 ]
 
+@findPayDateForBillingPeriod = (index) ->
+  start = findDateRangeForBillingPeriod(index)?.start
+  return moment(start).add(15, 'days').toDate()
+
 # returns index into @BillingPeriods
 @findBillingPeriod = (timestamp) ->
   month = moment(timestamp).format('MMMM')
@@ -23,11 +27,14 @@ Meteor.isServer && myLog = new lc.EventLog(['client_id', 'employee_id'])
 
 # Returns {start: Date, end: Date}
 @findDateRangeForBillingPeriod = (index) ->
-  month_range = BillingPeriods[index].month_range
-  return {
-    start: moment(month_range[0], 'M').toDate(),
-    end: moment(month_range[month_range.length-1], 'M').add(1, 'month').toDate()
-  }
+  month_range = BillingPeriods[index]?.month_range
+  if month_range?
+    return {
+      start: moment(month_range[0], 'M').toDate(),
+      end: moment(month_range[month_range.length-1], 'M').add(1, 'month').toDate()
+    }
+  else
+    return null
 
 # {name, phone, email, [bonus pay items], type}
 @Employees = Meteor.users

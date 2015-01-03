@@ -8,7 +8,6 @@
   - Monthly? Trends?
 
 # Cleanup
- - Session log form should clear after sucessful submit
  - Search in DataTables doesn't work
 
 # Wishlist
@@ -19,5 +18,6 @@
 # Debt
  - Clients aren't User objects.
  - Route generation is hardcoded at startup. Makes login difficult
+  - Can modify nav-lib to accept an isAdmin param - can use reactive source
  - Need to replace hardcoded HTML in tables.coffee with tmpl: calls.
  - Need to replace hardcoded '/tutors/:_id' paths with IronRouter's pathFor helper
