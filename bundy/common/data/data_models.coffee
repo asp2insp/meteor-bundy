@@ -202,6 +202,23 @@ if Meteor.isServer
       ]
     }
   )
+  Meteor.publishComposite('PayStubs_withSessions_withClients', (tableName, ids, fields) ->
+    return {
+      find: () ->
+        return PayStubs.find({_id: {$in: ids}}, {fields: fields});
+      ,
+      children: [
+        {
+          find: (stub) ->
+            return Sessions.find({_id: {$in: stub.session_ids}})
+        },
+        {
+          find: (stub) ->
+            return Clients.find({_id: {$in: stub.client_ids}})
+        }
+      ]
+    }
+  )
 
 if Meteor.isClient
   Meteor.subscribe("userData")

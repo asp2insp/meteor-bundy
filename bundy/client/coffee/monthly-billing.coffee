@@ -5,13 +5,6 @@ Template.billingHeader.helpers({
     return moment().year()
 })
 
-Template.approvePay.helpers({
-  reviewedEmployeesSelector: () ->
-    return {_id: {$in: Session.get('reviewedEmployees')}}
-  unreviewedEmployeesSelector: () ->
-    return {_id: {$nin: Session.get('reviewedEmployees')}}
-})
-
 Template.approveEmployee.helpers({
   employeeBillingSelector: () ->
     date_range = findDateRangeForBillingPeriod(Session.get('billingPeriodIndex'))
@@ -30,33 +23,117 @@ Template.approveClient.helpers({
     }
 })
 
-Template.approveBill.helpers({
-  reviewedClientsSelector: () ->
-    return {_id: {$in: Session.get('reviewedClients')}}
-  unreviewedClientsSelector: () ->
-    return {_id: {$nin: Session.get('reviewedClients')}}
-})
-
-# Update the list of reviewed employees
-Tracker.autorun(() ->
-  billingPeriod = Session.get('billingPeriodIndex')
-  date_range = findDateRangeForBillingPeriod?(billingPeriod) || {}
-  reviewedEmployees = []
-  PayStubs?.find({pay_date: {$gte: date_range.start, $lt: date_range.end}}).forEach((stub) ->
-    reviewedEmployees.push(stub.employee_id)
+Template.approveBill.rendered = () ->
+  this.autorun(() ->
+    unless Session.get('reviewedClients')
+      return
+    if this.unreviewed?
+      Blaze.remove(this.unreviewed)
+    if this.reviewed?
+      Blaze.remove(this.reviewed)
+    this.unreviewed = Blaze.renderWithData(
+      Template.tabular,
+      {
+        table: TabularTables.BillingClients,
+        selector: {_id: {$nin: Session.get('reviewedClients')}},
+        class: "table table-condensed"
+      },
+      this.templateInstance().find('#unreviewed')
+    )
+    this.reviewed = Blaze.renderWithData(
+      Template.tabular,
+      {
+        table: TabularTables.BillingClients,
+        selector: {_id: {$in: Session.get('reviewedClients')}},
+        class: "table table-condensed"
+      },
+      this.templateInstance().find('#reviewed')
+    )
   )
-  Session.set('reviewedEmployees', reviewedEmployees)
-)
 
-# Update the list of reviewed clients
-Tracker.autorun(() ->
-  billingPeriod = Session.get('billingPeriodIndex')
-  date_range = findDateRangeForBillingPeriod?(billingPeriod) || {}
-  reviewedClients = []
-  ClientInvoices?.find({date_issued: {$gte: date_range.start, $lt: date_range.end}}).forEach((invoice) ->
-    reviewedClients.push(invoice.client_id)
+Template.approvePay.rendered = () ->
+  this.autorun(() ->
+    unless Session.get('reviewedEmployees')
+      return
+    if this.unreviewed?
+      Blaze.remove(this.unreviewed)
+    if this.reviewed?
+      Blaze.remove(this.reviewed)
+    this.unreviewed = Blaze.renderWithData(
+      Template.tabular,
+      {
+        table: TabularTables.BillingEmployees,
+        selector: {_id: {$nin: Session.get('reviewedEmployees')}},
+        class: "table table-condensed"
+      },
+      this.templateInstance().find('#unreviewed')
+    )
+    this.reviewed = Blaze.renderWithData(
+      Template.tabular,
+      {
+        table: TabularTables.BillingEmployees,
+        selector: {_id: {$in: Session.get('reviewedEmployees')}},
+        class: "table table-condensed"
+      },
+      this.templateInstance().find('#reviewed')
+    )
   )
-  Session.set('reviewedClients', reviewedClients)
+
+Template.sendPay.rendered = () ->
+  this.autorun(() ->
+    unless Session.get('billingPeriodIndex')?
+      return
+    if this.approved?
+      Blaze.remove(this.approved)
+    if this.sent?
+      Blaze.remove(this.sent)
+    date_range = findDateRangeForBillingPeriod(Session.get('billingPeriodIndex'))
+    this.approved = Blaze.renderWithData(
+      Template.tabular,
+      {
+        table: TabularTables.BillingPayStubs,
+        selector: {},
+        class: "table table-condensed"
+      },
+      this.templateInstance().find('#approved')
+    )
+    this.sent = Blaze.renderWithData(
+      Template.tabular,
+      {
+        table: TabularTables.BillingPayStubs,
+        selector: {},
+        class: "table table-condensed"
+      },
+      this.templateInstance().find('#sent')
+    )
+  )
+
+Meteor.startup(() ->
+  # Update the list of reviewed employees
+  Tracker.autorun(() ->
+    billingPeriod = Session.get('billingPeriodIndex')
+    unless billingPeriod?
+      return
+    date_range = findDateRangeForBillingPeriod?(billingPeriod) || {}
+    reviewedEmployees = []
+    PayStubs.find({pay_date: {$gte: date_range.start, $lt: date_range.end}}).forEach((stub) ->
+      reviewedEmployees.push(stub.employee_id)
+    )
+    Session.set('reviewedEmployees', reviewedEmployees)
+  )
+
+  # Update the list of reviewed clients
+  Tracker.autorun(() ->
+    billingPeriod = Session.get('billingPeriodIndex')
+    unless billingPeriod?
+      return
+    date_range = findDateRangeForBillingPeriod?(billingPeriod) || {}
+    reviewedClients = []
+    ClientInvoices.find({date_issued: {$gte: date_range.start, $lt: date_range.end}}).forEach((invoice) ->
+      reviewedClients.push(invoice.client_id)
+    )
+    Session.set('reviewedClients', reviewedClients)
+  )
 )
 
 Template.billingHeader.events({
@@ -111,8 +188,7 @@ Template.billingHeader.rendered = () ->
 
 Template.billingSteps.rendered = () ->
   _.forEach(this.findAll('a.billing-step'), (a) ->
-    if a.pathname == location.pathname
-
+    if _s.contains(location.pathname, a.pathname)
       $(a).parent().addClass('active')
   )
 

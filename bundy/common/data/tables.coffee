@@ -1,4 +1,4 @@
-TabularTables = {}
+@TabularTables = {}
 Meteor.isClient && Template.registerHelper('TabularTables', TabularTables)
 
 EmployeeSessionsColumns = [
@@ -218,4 +218,39 @@ TabularTables.BillingClientSessions = new Tabular.Table({
   dom: 't',
   pageLength: 1000,
   columns: ClientReviewSessionColumns
+})
+
+TabularTables.BillingPayStubs = new Tabular.Table({
+  name: 'BillingPayStubs',
+  collection: PayStubs,
+  pub: 'PayStubs_withSessions_withClients',
+  dom: 't',
+  pageLength: 1000,
+  # {date, amount, memo, employee_id, [client_ids], [session_ids]}
+  columns: [
+    {
+      title: 'Date',
+      data: 'pay_date',
+      render: (date) ->
+        return moment(date).calendar()
+    },
+    {
+      title: 'Tutor',
+      data: 'employee_id',
+      render: (employee_id) ->
+        return Employees.findOne(employee_id)?.profile?.name
+    },
+    {
+      title: 'Sessions',
+      data: 'session_ids',
+      sortable: false,
+      render: (session_ids) ->
+        console.log(session_ids)
+        sessions = Sessions.find({_id: {$in: session_ids}}).fetch()
+        return _.reduce(sessions, (acc, curr) ->
+          client_name = Clients.findOne(curr.client_id)?.name
+          return acc + '<li>' + client_name + ': ' + curr.total_pay + '</li>'
+        , '<ul>') + '</ul>'
+    }
+  ]
 })

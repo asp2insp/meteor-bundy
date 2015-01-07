@@ -26,16 +26,14 @@ template(name="approvePay")
             | Unreviewed Employees
           .panel-body
             .row
-              .col-md-12
-                +tabular(table=TabularTables.BillingEmployees selector=unreviewedEmployeesSelector class="table table-condensed")
+              #unreviewed.col-md-12
       .col-lg-6
         .panel.panel-default
           .panel-heading
             | Reviewed Employees
           .panel-body
             .row
-              .col-md-12
-                +tabular(table=TabularTables.BillingEmployees selector=reviewedEmployeesSelector class="table table-condensed")
+              #reviewed.col-md-12
 
 template(name="approveBill")
   #page-wrapper
@@ -50,16 +48,14 @@ template(name="approveBill")
             | Unreviewed Clients
           .panel-body
             .row
-              .col-md-12
-                +tabular(table=TabularTables.BillingClients selector=unreviewedClientsSelector class="table table-condensed")
+              #unreviewed.col-md-12
       .col-lg-6
         .panel.panel-default
           .panel-heading
             | Reviewed Clients
           .panel-body
             .row
-              .col-md-12
-                +tabular(table=TabularTables.BillingClients selector=reviewedClientsSelector class="table table-condensed")
+              #reviewed.col-md-12
 
 template(name="sendInvoices")
   #page-wrapper
@@ -74,14 +70,14 @@ template(name="sendInvoices")
             | Approved Invoices
           .panel-body
             .row
-              .col-md-12
+              #approved.col-md-12
       .col-lg-6
         .panel.panel-default
           .panel-heading
             | Sent Invoices
           .panel-body
             .row
-              .col-md-12
+              #sent.col-md-12
 
 template(name="sendPay")
   #page-wrapper
@@ -96,14 +92,14 @@ template(name="sendPay")
             | Approved Paystubs
           .panel-body
             .row
-              .col-md-12
+              #approved.col-md-12
       .col-lg-6
         .panel.panel-default
           .panel-heading
             | Sent Paystubs
           .panel-body
             .row
-              .col-md-12
+              #sent.col-md-12
 
 template(name="approveEmployee")
   #page-wrapper
@@ -138,7 +134,6 @@ template(name="approveClient")
     .row
       .col-lg-12
         .btn.btn-success.pull-right.approve Approve
-    +editSession
 
 template(name="billingSteps")
   ul.pagination.center
