@@ -1,5 +1,3 @@
-Meteor.subscribe('Invoices_withSessions_withClients')
-
 Template.monthlyPL.events({
   'click #monthdropdown a': (e, t) ->
     e.preventDefault()
@@ -8,10 +6,8 @@ Template.monthlyPL.events({
 
 Template.monthlyPL.helpers({
   'revenue_recieved': () ->
-    periodIndex = Session.get('profitLossPeriodIndex')
-    unless periodIndex?
-      return
-    date_range = findDateRangeForBillingPeriod(periodIndex)
+    index = Session.get('profitLossPeriodIndex')
+    date_range = findDateRangeForBillingPeriod(index)
     recieved = []
     ClientInvoices.find(
       {
@@ -24,10 +20,8 @@ Template.monthlyPL.helpers({
     )
     return recieved
   'revenue_outstanding': () ->
-    periodIndex = Session.get('profitLossPeriodIndex')
-    unless periodIndex?
-      return
-    date_range = findDateRangeForBillingPeriod(periodIndex)
+    index = Session.get('profitLossPeriodIndex')
+    date_range = findDateRangeForBillingPeriod(index)
     outstanding = []
     ClientInvoices.find(
       {
@@ -39,6 +33,47 @@ Template.monthlyPL.helpers({
       outstanding.push({name: client_name, amount: invoice.amount})
     )
     return outstanding
+  'payroll': () ->
+    index = Session.get('profitLossPeriodIndex')
+    date_range = findDateRangeForBillingPeriod(index)
+    payroll = []
+    PayStubs.find({
+      pay_date:  {$gte: date_range?.start, $lt: date_range?.end}
+    }).forEach((payStub) ->
+      employee_name = Employees.findOne(payStub.employee_id)?.profile?.name
+      payroll.push({name: employee_name, amount: payStub.amount})
+    )
+    return payroll
+  'other': () ->
+    index = Session.get('profitLossPeriodIndex')
+    date_range = findDateRangeForBillingPeriod(index)
+    return Expenses.find({
+      date:  {$gte: date_range?.start, $lt: date_range?.end}
+    }).fetch()
+  'total_revenue': () ->
+    recieved = getHelper('revenue_recieved', Template.instance())()
+    outstanding = getHelper('revenue_outstanding', Template.instance())()
+    recieved_total = _.reduce(recieved, (sum, lineItem) ->
+      return sum + lineItem.amount
+    , 0)
+    outstanding_total = _.reduce(outstanding, (sum, lineItem) ->
+      return sum + lineItem.amount
+    , 0)
+    return recieved_total + outstanding_total
+  'total_expenses': () ->
+    payroll = getHelper('payroll', Template.instance())()
+    other = getHelper('other', Template.instance())()
+    payroll_total = _.reduce(payroll, (sum, lineItem) ->
+      return sum + lineItem.amount
+    , 0)
+    other_total = _.reduce(other_total, (sum, lineItem) ->
+      return sum + lineItem.amount
+    , 0)
+    return payroll_total + other_total
+  'net': () ->
+    total_revenue = getHelper('total_revenue', Template.instance())()
+    total_expenses = getHelper('total_expenses', Template.instance())()
+    return total_revenue - total_expenses
 })
 
 selectProfitLossPeriod = (periodName) ->
@@ -51,3 +86,10 @@ Template.monthlyPL.rendered = () ->
     selectProfitLossPeriod(BillingPeriods[findBillingPeriod(Date.now())].name)
   else
     $('#monthtext').text(BillingPeriods[index].name)
+  this.autorun(() ->
+    index = Session.get('profitLossPeriodIndex')
+    date_range = findDateRangeForBillingPeriod(index)
+    Meteor.subscribe('Invoices_withSessions_withClients', null, null, null, date_range)
+    Meteor.subscribe('PayStubs_withSessions_withClients', null, null, null, date_range)
+    # Meteor.subscribe('Invoices_withSessions_withClients', null, null, null, date_range)
+  )

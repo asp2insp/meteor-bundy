@@ -15,37 +15,50 @@ template(name="monthlyPL")
             | {{currentYear}}
     .row
       .col-lg-4
-        .panel.panel-default
+        .panel.panel-info
           .panel-heading
             | Revenue
           .panel-body
+            .h3 Received
             ul
               each revenue_received
                 li {{name}}: ${{amount}}
-          .panel-footer
-            | Total:
-      .col-lg-4
-        .panel.panel-default
-          .panel-heading
-            | Expenses
-          .panel-body
+            .h3 Outstanding
             ul
               each revenue_outstanding
                 li {{name}}: ${{amount}}
           .panel-footer
-            | Total:
+            | Total: ${{total_revenue}}
       .col-lg-4
-        .panel.panel-default
+        .panel.panel-warning
+          .panel-heading
+            | Expenses
+          .panel-body
+            .h3 Payroll
+            ul
+              each payroll
+                li {{name}}: ${{amount}}
+            .h3 Other
+            ul
+              each other
+                li {{name}}: ${{amount}}
+          .panel-footer
+            | Total: ${{total_expenses}}
+      .col-lg-4
+        .panel.panel-success
           .panel-heading
             | Totals
           .panel-body
-            p
-              | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tincidunt est vitae ultrices accumsan. Aliquam ornare lacus adipiscing, posuere lectus et, fringilla augue.
+            .h3 Revenue
+            | ${{total_revenue}}
+            .h3 Expenses
+            | ${{total_expenses}}
           .panel-footer
-            | Net:
+            | Net: ${{net}}
 
 template(name="annualPL")
   #page-wrapper
     .row
       .col-md-12
         h1.page-header Annual Profit/Loss
+

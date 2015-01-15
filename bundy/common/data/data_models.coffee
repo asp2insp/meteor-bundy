@@ -79,12 +79,31 @@ Meteor.isServer && myLog.startLogging(Sessions, {
 
 # {date, amount, memo, employee_id, [client_ids], [session_ids]}
 @PayStubs = new Mongo.Collection('PayStubs')
+Meteor.isServer && myLog.startLogging(PayStubs, {
+  desc: (payStub) ->
+    return payStub.pay_date.toDateString() + ': $' + payStub.amount
+  indexOn: {
+    'paystub_id': (payStub) ->
+      return payStub._id
+  }
+})
 
 # {date_issued, date_due, date_paid, amount, memo, client_id, [employee_ids], [session_ids]}
 @ClientInvoices = new Mongo.Collection('ClientInvoices')
+Meteor.isServer && myLog.startLogging(ClientInvoices, {
+  desc: (invoice) ->
+    return invoice.date_issued.toDateString() + ': $' + invoice.amount
+  indexOn: {
+    'invoice_id': (invoice) ->
+      return invoice._id
+  }
+})
 
 # TODO: Fill this with pre-computed types
 @EmployeeTypes = new Mongo.Collection('EmployeeTypes')
+
+# {name, date, amount}
+@Expenses = new Mongo.Collection('Expenses')
 
 if Meteor.isServer
   Meteor.publish("userData", () ->
@@ -200,7 +219,12 @@ if Meteor.isServer
       ]
     }
   )
-  Meteor.publishComposite('PayStubs_withSessions_withClients', (tableName, ids, fields) ->
+  Meteor.publishComposite('PayStubs_withSessions_withClients', (tableName, ids, fields, date_range) ->
+    if date_range?
+      return {
+        find: () ->
+          PayStubs.find({pay_date: {$gte: date_range.start, $lt: date_range.end}})
+      }
     return {
       find: () ->
         return PayStubs.find({_id: {$in: ids}}, {fields: fields});
@@ -213,7 +237,13 @@ if Meteor.isServer
       ]
     }
   )
-  Meteor.publishComposite('Invoices_withSessions_withClients', (tableName, ids, fields) ->
+  Meteor.publishComposite('Invoices_withSessions_withClients', (tableName, ids, fields, date_range) ->
+    if date_range?
+      return {
+        find: () ->
+          return ClientInvoices.find({date_issued: {$gte: date_range.start, $lt: date_range.end}})
+      }
+
     return {
       find: () ->
         return ClientInvoices.find({_id: {$in: ids}}, {fields: fields});
