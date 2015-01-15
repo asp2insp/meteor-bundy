@@ -1,0 +1,51 @@
+template(name="monthlyPL")
+  #page-wrapper
+    .row
+      .col-md-12
+        h1.page-header Monthly Profit/Loss
+          .pull-right
+            #monthdropdown.btn-group
+              button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
+                span#monthtext Month Of...
+                span.caret
+              ul.dropdown-menu.pull-right(role="menu")
+                each months
+                  li
+                    a(href="#") {{name}}
+            | {{currentYear}}
+    .row
+      .col-lg-4
+        .panel.panel-default
+          .panel-heading
+            | Revenue
+          .panel-body
+            ul
+              each revenue_received
+                li {{name}}: ${{amount}}
+          .panel-footer
+            | Total:
+      .col-lg-4
+        .panel.panel-default
+          .panel-heading
+            | Expenses
+          .panel-body
+            ul
+              each revenue_outstanding
+                li {{name}}: ${{amount}}
+          .panel-footer
+            | Total:
+      .col-lg-4
+        .panel.panel-default
+          .panel-heading
+            | Totals
+          .panel-body
+            p
+              | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tincidunt est vitae ultrices accumsan. Aliquam ornare lacus adipiscing, posuere lectus et, fringilla augue.
+          .panel-footer
+            | Net:
+
+template(name="annualPL")
+  #page-wrapper
+    .row
+      .col-md-12
+        h1.page-header Annual Profit/Loss

@@ -35,7 +35,10 @@ navRoutes = [
   })
   new NavRoute('send-invoices', '', {isMainNav: false})
   new NavRoute('send-pay', '', {isMainNav: false})
+
   new NavRoute('accounting', 'fa-line-chart')
+  new NavRoute('monthlyPL', 'fa-pie-chart',  {parentName: 'accounting', label: 'Monthly P/L'})
+  new NavRoute('annualPL', 'fa-area-chart',  {parentName: 'accounting', label: 'Annual P/L'})
   new NavRoute('action-history', 'fa-clock-o', {label: 'Action History'})
 
   new NavRoute('profile', '', {isMainNav: false})

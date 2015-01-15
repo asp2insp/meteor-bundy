@@ -1,10 +1,3 @@
-Template.billingHeader.helpers({
-   months: () ->
-    return BillingPeriods
-  currentYear: () ->
-    return moment().year()
-})
-
 Template.approveEmployee.helpers({
   employeeBillingSelector: () ->
     date_range = findDateRangeForBillingPeriod(Session.get('billingPeriodIndex'))
@@ -92,7 +85,10 @@ Template.sendPay.rendered = () ->
       Template.tabular,
       {
         table: TabularTables.BillingPayStubs,
-        selector: {},
+        selector: {
+          sent_date: {$exists: false},
+          pay_date: {$gte: date_range?.start, $lt: date_range?.end}
+        },
         class: "table table-condensed"
       },
       this.templateInstance().find('#approved')
@@ -101,7 +97,45 @@ Template.sendPay.rendered = () ->
       Template.tabular,
       {
         table: TabularTables.BillingPayStubs,
-        selector: {},
+        selector: {
+          sent_date: {$exists: true},
+          pay_date: {$gte: date_range?.start, $lt: date_range?.end}
+        },
+        class: "table table-condensed"
+      },
+      this.templateInstance().find('#sent')
+    )
+  )
+
+Template.sendInvoices.rendered = () ->
+  this.autorun(() ->
+    unless Session.get('billingPeriodIndex')?
+      return
+    if this.approved?
+      Blaze.remove(this.approved)
+    if this.sent?
+      Blaze.remove(this.sent)
+    date_range = findDateRangeForBillingPeriod(Session.get('billingPeriodIndex'))
+    this.approved = Blaze.renderWithData(
+      Template.tabular,
+      {
+        table: TabularTables.BillingInvoices,
+        selector: {
+          sent_date: {$exists: false},
+          date_issued: {$gte: date_range?.start, $lt: date_range?.end}
+        },
+        class: "table table-condensed"
+      },
+      this.templateInstance().find('#approved')
+    )
+    this.sent = Blaze.renderWithData(
+      Template.tabular,
+      {
+        table: TabularTables.BillingInvoices,
+        selector: {
+          sent_date: {$exists: true},
+          date_issued: {$gte: date_range?.start, $lt: date_range?.end}
+        },
         class: "table table-condensed"
       },
       this.templateInstance().find('#sent')

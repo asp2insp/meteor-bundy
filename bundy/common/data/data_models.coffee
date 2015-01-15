@@ -80,12 +80,10 @@ Meteor.isServer && myLog.startLogging(Sessions, {
 # {date, amount, memo, employee_id, [client_ids], [session_ids]}
 @PayStubs = new Mongo.Collection('PayStubs')
 
-# {date_issued, date_due, amount, memo, client_id, [employee_ids], [session_ids]}
+# {date_issued, date_due, date_paid, amount, memo, client_id, [employee_ids], [session_ids]}
 @ClientInvoices = new Mongo.Collection('ClientInvoices')
 
-# {date, amount, memo, client}
-@ClientPayReceipts = new Mongo.Collection('ClientPayReceipts')
-
+# TODO: Fill this with pre-computed types
 @EmployeeTypes = new Mongo.Collection('EmployeeTypes')
 
 if Meteor.isServer
@@ -211,10 +209,19 @@ if Meteor.isServer
         {
           find: (stub) ->
             return Sessions.find({_id: {$in: stub.session_ids}})
-        },
+        }
+      ]
+    }
+  )
+  Meteor.publishComposite('Invoices_withSessions_withClients', (tableName, ids, fields) ->
+    return {
+      find: () ->
+        return ClientInvoices.find({_id: {$in: ids}}, {fields: fields});
+      ,
+      children: [
         {
-          find: (stub) ->
-            return Clients.find({_id: {$in: stub.client_ids}})
+          find: (invoice) ->
+            return Sessions.find({_id: {$in: invoice.session_ids}})
         }
       ]
     }

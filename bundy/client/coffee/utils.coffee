@@ -10,3 +10,11 @@ UI.registerHelper('companyName', () ->
 UI.registerHelper('employeeSelector', () ->
   return {employee_id: Meteor.userId()}
 )
+
+UI.registerHelper('months', () ->
+    return BillingPeriods
+)
+
+UI.registerHelper('currentYear', () ->
+    return moment().year()
+)

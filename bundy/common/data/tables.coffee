@@ -226,7 +226,6 @@ TabularTables.BillingPayStubs = new Tabular.Table({
   pub: 'PayStubs_withSessions_withClients',
   dom: 't',
   pageLength: 1000,
-  # {date, amount, memo, employee_id, [client_ids], [session_ids]}
   columns: [
     {
       title: 'Date',
@@ -245,11 +244,43 @@ TabularTables.BillingPayStubs = new Tabular.Table({
       data: 'session_ids',
       sortable: false,
       render: (session_ids) ->
-        console.log(session_ids)
         sessions = Sessions.find({_id: {$in: session_ids}}).fetch()
         return _.reduce(sessions, (acc, curr) ->
           client_name = Clients.findOne(curr.client_id)?.name
-          return acc + '<li>' + client_name + ': ' + curr.total_pay + '</li>'
+          return acc + '<li>' + client_name + ': ' + curr.billing_rate.session_type + ' - ' + curr.total_pay + '</li>'
+        , '<ul>') + '</ul>'
+    }
+  ]
+})
+
+TabularTables.BillingInvoices = new Tabular.Table({
+  name: 'BillingInvoices',
+  collection: ClientInvoices,
+  pub: 'Invoices_withSessions_withClients',
+  dom: 't',
+  pageLength: 1000,
+  columns: [
+    {
+      title: 'Issue Date',
+      data: 'date_issued',
+      render: (date_issued) ->
+        return moment(date_issued).calendar()
+    },
+    {
+      title: 'Client',
+      data: 'client_id',
+      render: (client_id) ->
+        return Clients.findOne(client_id)?.name
+    },
+    {
+      title: 'Sessions',
+      data: 'session_ids',
+      sortable: false,
+      render: (session_ids) ->
+        sessions = Sessions.find({_id: {$in: session_ids}}).fetch()
+        return _.reduce(sessions, (acc, curr) ->
+          employee_name = Employees.findOne(curr.employee_id)?.profile?.name
+          return acc + '<li>' + employee_name + ': ' + curr.billing_rate.session_type + ' - ' + curr.total_bill + '</li>'
         , '<ul>') + '</ul>'
     }
   ]
