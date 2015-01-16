@@ -93,3 +93,19 @@ Template.monthlyPL.rendered = () ->
     Meteor.subscribe('PayStubs_withSessions_withClients', null, null, null, date_range)
     # Meteor.subscribe('Invoices_withSessions_withClients', null, null, null, date_range)
   )
+
+Template.annualPL.rendered = () ->
+  Meteor.subscribe('PeriodProfitLoss')
+
+Template.annualPL.helpers({
+  'billingPeriods': () ->
+    return lodash.map(PeriodProfitLoss.find().fetch(), (period) ->
+      period.net = period.revenue - period.expenses
+      if period.net < 0
+        period.net = '(' + (period.net * -1) + ')'
+      return period
+    )
+})
+
+@PeriodProfitLoss = new Mongo.Collection('periodprofitloss')
+

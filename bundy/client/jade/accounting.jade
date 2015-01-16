@@ -61,4 +61,19 @@ template(name="annualPL")
     .row
       .col-md-12
         h1.page-header Annual Profit/Loss
-
+    .row
+      .col-md-12
+        table.table.table-striped.table-bordered.table-hover
+          thead
+            tr
+              th Billing Period
+              th Revenue
+              th Expenses
+              th Net
+          tbody
+            each billingPeriods
+              tr
+                td {{name}}
+                td {{revenue}}
+                td ({{expenses}})
+                td {{net}}

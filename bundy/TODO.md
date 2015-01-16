@@ -9,6 +9,7 @@
 
 # Cleanup
  - Search in DataTables doesn't work
+ - Invoices/PayStubs should notify when they need updating!
 
 # Wishlist
  - Smart session pre-fill

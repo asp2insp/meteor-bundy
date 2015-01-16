@@ -256,6 +256,32 @@ if Meteor.isServer
       ]
     }
   )
+  Meteor.publish('PeriodProfitLoss', () ->
+    self = this
+    initializing = true;
+    lodash.forEach(BillingPeriods, (period, index) ->
+      date_range = findDateRangeForBillingPeriod(index)
+      invoicesForPeriod = ClientInvoices.find({date_issued: {$gte: date_range.start, $lt: date_range.end}}).fetch()
+      payStubsForPeriod = PayStubs.find({pay_date: {$gte: date_range.start, $lt: date_range.end}}).fetch()
+      expensesForPeriod = Expenses.find({date: {$gte: date_range.start, $lt: date_range.end}}).fetch()
+      lodash.assign(period, {
+        revenue: lodash.reduce(invoicesForPeriod, (sum, invoice) ->
+          return sum + invoice.amount
+        , 0)
+        expenses: (
+          lodash.reduce(payStubsForPeriod, (sum, payStub) ->
+            return sum + payStub.amount
+          , 0) +
+          lodash.reduce(expensesForPeriod, (sum, expense) ->
+            return sum + expense.amount
+          , 0)
+        )
+      })
+      self.added("periodprofitloss", period.name, period);
+    )
+    self.ready();
+  )
+
 
 if Meteor.isClient
   Meteor.subscribe("userData")

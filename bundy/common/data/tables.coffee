@@ -58,7 +58,7 @@ TabularTables.Employees = new Tabular.Table({
       data: 'profile.name',
       title: 'Name',
       render: (name, type, doc) ->
-        return '<a href="tutors/' + doc._id + '">' + name + '</a>'
+        return '<a href="/tutors/' + doc._id + '">' + name + '</a>'
     },
     {data: 'profile.type', title: 'Type'},
     {
@@ -79,7 +79,7 @@ TabularTables.Clients = new Tabular.Table({
       data: 'name',
       title: 'Name',
       render: (name, type, doc) ->
-        return '<a href="clients/' + doc._id + '">' + name + '</a>'
+        return '<a href="/clients/' + doc._id + '">' + name + '</a>'
     },
     {
       data: '_id',
@@ -116,7 +116,7 @@ ClientSessionColumns = [
     title: 'Tutor',
     render: (_id, type, doc) ->
       employee = Employees.findOne(_id)
-      return '<a href="tutors/' + _id + '">' + employee.profile.name + '</a>'
+      return '<a href="/tutors/' + _id + '">' + employee.profile.name + '</a>'
   },
   {
     data: 'billing_rate',
@@ -186,9 +186,19 @@ EmployeeReviewSessionColumns = lodash.cloneDeep(EmployeeSessionsColumns)
 EmployeeReviewSessionColumns.push({
   data: '_id',
   title: 'Edit',
+  sortable: false,
   render: (_id, type, doc) ->
     return '<div class="btn btn-primary edit-session" data-id="' + _id +
            '" data-toggle="modal", data-target="#editsessionmodal" >Edit</div>'
+})
+EmployeeReviewSessionColumns.push({
+  data: '_id',
+  title: '',
+  sortable: false,
+  render: (_id, type, doc) ->
+    unless PayStubs.find({session_ids: _id}).count() == 1
+      return '<i class="fa fa-check-circle text-success"></i>'
+    return '<i class="fa fa-close text-danger"></i>'
 })
 
 TabularTables.BillingEmployeeSessions = new Tabular.Table({
@@ -208,6 +218,14 @@ ClientReviewSessionColumns.push({
   render: (_id, type, doc) ->
     return '<div class="btn btn-primary edit-session" data-id="' + _id +
            '" data-toggle="modal", data-target="#editsessionmodal" >Edit</div>'
+})
+ClientReviewSessionColumns.push({
+  data: '_id',
+  title: '',
+  render: (_id, type, doc) ->
+    unless ClientInvoices.find({session_ids: _id}).count() == 1
+      return '<i class="fa fa-check-circle text-success"></i>'
+    return '<i class="fa fa-close text-danger"></i>'
 })
 
 TabularTables.BillingClientSessions = new Tabular.Table({
