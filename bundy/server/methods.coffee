@@ -78,3 +78,7 @@ Meteor.methods({
     else
       ClientInvoices.insert(invoice)
 })
+
+Accounts.config({
+  forbidClientAccountCreation : true
+});

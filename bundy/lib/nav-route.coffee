@@ -6,11 +6,13 @@ class NavRoute
       throw new Error('Must provide a name for each NavRoute')
     unless @config?
       @config = {}
-    {@template, @isMainNav, @label, @path, @parentName, @layoutTemplate, @redirect, @data} = @config
+    {@template, @isMainNav, @isEmployeeRoute, @label, @path, @parentName, @layoutTemplate, @redirect, @data} = @config
     unless @template?
       @template = @name
     unless @isMainNav?
       @isMainNav = true
+    unless @isEmployeeRoute?
+      @isEmployeeRoute = false
     unless @label?
       if @redirect?
         @label = @redirect.substr(0, 1).toUpperCase() + @redirect.substr(1)

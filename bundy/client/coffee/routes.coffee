@@ -1,10 +1,13 @@
 finalRoutes = []
 
 navRoutes = [
-  new NavRoute('sessions', 'fa-calendar')
-  new NavRoute('my-sessions', 'fa-user', {label: 'My Sessions', parentName: 'sessions'})
-  new NavRoute('log', 'fa-plus', {parentName: 'sessions'})
+  new NavRoute('sessions', 'fa-calendar', {isEmployeeRoute: true})
+  new NavRoute('my-sessions', 'fa-user', {label: 'My Sessions', parentName: 'sessions', isEmployeeRoute: true})
+  new NavRoute('log', 'fa-plus', {parentName: 'sessions', isEmployeeRoute: true})
+  new NavRoute('action-history', 'fa-clock-o', {label: 'Action History', isEmployeeRoute: true})
+]
 
+adminRoutes = [
   new NavRoute('tutors', 'fa-university')
   new NavRoute('tutors/:_id', '', {
     isMainNav: false,
@@ -39,7 +42,6 @@ navRoutes = [
   new NavRoute('accounting', 'fa-line-chart')
   new NavRoute('monthlyPL', 'fa-pie-chart',  {parentName: 'accounting', label: 'Monthly P/L'})
   new NavRoute('annualPL', 'fa-area-chart',  {parentName: 'accounting', label: 'Annual P/L'})
-  new NavRoute('action-history', 'fa-clock-o', {label: 'Action History'})
 
   new NavRoute('profile', '', {isMainNav: false})
   new NavRoute('edit-profile', '', {isMainNav: false})
@@ -64,6 +66,7 @@ demos = [
 ]
 
 finalRoutes.push navRoutes...
+finalRoutes.push adminRoutes...
 
 #finalRoutes.push demos...
 
@@ -73,7 +76,7 @@ Session.set('navRoots', navRouteList.rootNavRoutes)
 
 Router.onBeforeAction(() ->
   if !Meteor.userId()
-    this.render('logIn');
+    this.render('logIn')
   else
-    this.next();
-{except: ['sign-up']})
+    this.next()
+)

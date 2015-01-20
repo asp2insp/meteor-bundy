@@ -39,8 +39,6 @@ Meteor.isServer && myLog = new lc.EventLog(['client_id', 'employee_id'])
 # {name, phone, email, [bonus pay items], type}
 @Employees = Meteor.users
 Meteor.isServer && myLog.startLogging(Employees, {
-  desc: (user) ->
-    return user.profile.name
   indexOn: {
     'employee_id': (user) ->
       return user._id

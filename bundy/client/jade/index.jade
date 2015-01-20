@@ -26,50 +26,50 @@ template(name="topbar")
         a.navbar-brand(href="/") {{companyName}}
       // /.navbar-header
       ul.nav.navbar-top-links.navbar-right
-        li.dropdown
-          a.dropdown-toggle(data-toggle="dropdown", href="#")
-            i.fa.fa-envelope.fa-fw
-            i.fa.fa-caret-down
-          ul.dropdown-menu.dropdown-messages
-            +emailDropdownElement(href="#" name="John Smith" when="Yesterday" summary="Lorem ipsum dolor sit amet, consectetur...")
-            +emailDropdownElement(href="#" name="John Smith" when="Yesterday" summary="Lorem ipsum dolor sit amet, consectetur...")
-            +emailDropdownElement(href="#" name="John Smith" when="Yesterday" summary="Lorem ipsum dolor sit amet, consectetur...")
-            li
-              a.text-center(href="#")
-                strong Read All Messages
-                i.fa.fa-angle-right
+        //- li.dropdown
+        //-   a.dropdown-toggle(data-toggle="dropdown", href="#")
+        //-     i.fa.fa-envelope.fa-fw
+        //-     i.fa.fa-caret-down
+        //-   ul.dropdown-menu.dropdown-messages
+        //-     +emailDropdownElement(href="#" name="John Smith" when="Yesterday" summary="Lorem ipsum dolor sit amet, consectetur...")
+        //-     +emailDropdownElement(href="#" name="John Smith" when="Yesterday" summary="Lorem ipsum dolor sit amet, consectetur...")
+        //-     +emailDropdownElement(href="#" name="John Smith" when="Yesterday" summary="Lorem ipsum dolor sit amet, consectetur...")
+        //-     li
+        //-       a.text-center(href="#")
+        //-         strong Read All Messages
+        //-         i.fa.fa-angle-right
           // /.dropdown-messages
         // /.dropdown
-        li.dropdown
-          a.dropdown-toggle(data-toggle="dropdown", href="#")
-            i.fa.fa-tasks.fa-fw
-            i.fa.fa-caret-down
-          ul.dropdown-menu.dropdown-tasks
-            +taskDropdownElement(href="#" task="Task 1" percentComplete=40 type="success")
-            +taskDropdownElement(href="#" task="Task 2" percentComplete=20 type="info")
-            +taskDropdownElement(href="#" task="Task 3" percentComplete=60 type="warning")
-            +taskDropdownElement(href="#" task="Task 4" percentComplete=80 type="danger")
-            +taskDropdownElement(href="#" task="Task 5" percentComplete=100 type="")
-            li
-              a.text-center(href="#")
-                strong See All Tasks
-                i.fa.fa-angle-right
+        //- li.dropdown
+        //-   a.dropdown-toggle(data-toggle="dropdown", href="#")
+        //-     i.fa.fa-tasks.fa-fw
+        //-     i.fa.fa-caret-down
+        //-   ul.dropdown-menu.dropdown-tasks
+        //-     +taskDropdownElement(href="#" task="Task 1" percentComplete=40 type="success")
+        //-     +taskDropdownElement(href="#" task="Task 2" percentComplete=20 type="info")
+        //-     +taskDropdownElement(href="#" task="Task 3" percentComplete=60 type="warning")
+        //-     +taskDropdownElement(href="#" task="Task 4" percentComplete=80 type="danger")
+        //-     +taskDropdownElement(href="#" task="Task 5" percentComplete=100 type="")
+        //-     li
+        //-       a.text-center(href="#")
+        //-         strong See All Tasks
+        //-         i.fa.fa-angle-right
           // /.dropdown-tasks
         // /.dropdown
-        li.dropdown
-          a.dropdown-toggle(data-toggle="dropdown", href="#")
-            i.fa.fa-bell.fa-fw
-            i.fa.fa-caret-down
-          ul.dropdown-menu.dropdown-alerts
-            +notificationsElement(href="#" icon="fa-comment" text="New Comment" when="4 minutes ago")
-            +notificationsElement(href="#" icon="fa-twitter" text="3 New Followers" when="12 minutes ago")
-            +notificationsElement(href="#" icon="fa-envelope" text="Message Sent" when="14 minutes ago")
-            +notificationsElement(href="#" icon="fa-tasks" text="New Task" when="14 minutes ago")
-            +notificationsElement(href="#" icon="fa-upload" text="Server Rebooted" when="14 minutes ago")
-            li
-              a.text-center(href="#")
-                strong See All Alerts
-                i.fa.fa-angle-right
+        //- li.dropdown
+        //-   a.dropdown-toggle(data-toggle="dropdown", href="#")
+        //-     i.fa.fa-bell.fa-fw
+        //-     i.fa.fa-caret-down
+        //-   ul.dropdown-menu.dropdown-alerts
+        //-     +notificationsElement(href="#" icon="fa-comment" text="New Comment" when="4 minutes ago")
+        //-     +notificationsElement(href="#" icon="fa-twitter" text="3 New Followers" when="12 minutes ago")
+        //-     +notificationsElement(href="#" icon="fa-envelope" text="Message Sent" when="14 minutes ago")
+        //-     +notificationsElement(href="#" icon="fa-tasks" text="New Task" when="14 minutes ago")
+        //-     +notificationsElement(href="#" icon="fa-upload" text="Server Rebooted" when="14 minutes ago")
+        //-     li
+        //-       a.text-center(href="#")
+        //-         strong See All Alerts
+        //-         i.fa.fa-angle-right
           // /.dropdown-alerts
         // /.dropdown
         li.dropdown
@@ -81,10 +81,10 @@ template(name="topbar")
               a(href="/profile")
                 i.fa.fa-user.fa-fw
                 | User Profile
-            li
-              a(href="#")
-                i.fa.fa-gear.fa-fw
-                | Settings
+            //- li
+            //-   a(href="#")
+            //-     i.fa.fa-gear.fa-fw
+            //-     | Settings
             li.divider
             li
               a#sign-out(href="#")

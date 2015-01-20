@@ -4,6 +4,9 @@ Template.monthlyPL.events({
     selectProfitLossPeriod($(e.currentTarget).text())
 })
 
+# TODO: switch these helpers to render a particular tutor's P/L
+# and add a helper that will give the list of tutors who have active
+# sessions within that month
 Template.monthlyPL.helpers({
   'revenue_recieved': () ->
     index = Session.get('profitLossPeriodIndex')

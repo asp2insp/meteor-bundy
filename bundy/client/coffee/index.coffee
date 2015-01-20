@@ -38,7 +38,9 @@ Template.topbar.events(
 
 Template.sidebar.helpers(
   navElements: () ->
-    return Session.get('navRoots')
+    return _.filter(Session.get('navRoots'), (route) ->
+      return Meteor.user()?.isAdmin || route.isEmployeeRoute
+    )
 )
 
 Template.sidebar.rendered = () ->
