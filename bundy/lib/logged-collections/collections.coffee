@@ -8,10 +8,11 @@ class EventLog
   startLogging: (collection, options) ->
     lc._collections[collection._name] = collection
     indexedFields = @indexedFields
+    name = collection._name
     collection.after.insert((user_id, doc) ->
       ev = _.pick(doc, indexedFields)
       ev.action = 'insert'
-      ev.collection = collection._name
+      ev.collection = name
       ev.ts = Date.now()
       ev.user_id = user_id
       ev.rollback = {action: '$remove', selector: {_id: this._id}, payload: null}
@@ -26,7 +27,7 @@ class EventLog
     collection.before.remove((user_id, doc) ->
       ev = _.pick(doc, indexedFields)
       ev.action = 'remove'
-      ev.collection = collection._name
+      ev.collection = name
       ev.ts = Date.now()
       ev.user_id = user_id
       if options.desc
@@ -41,7 +42,7 @@ class EventLog
     collection.after.update((user_id, doc, fieldNames, modifier, options) ->
       ev = _.pick(doc, indexedFields)
       ev.action = 'update'
-      ev.collection = collection._name
+      ev.collection = name
       ev.ts = Date.now()
       ev.user_id = user_id
       if options.desc

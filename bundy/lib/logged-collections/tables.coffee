@@ -13,15 +13,16 @@
       title: 'Date',
       render: (val) ->
         return moment(val).calendar()
-    },
+    }
     {
       data: 'user_id',
       title: 'User',
       render: (val) ->
         return Meteor.users.findOne(val)?.profile.name
-    },
-    {data: 'action', title: 'Action', sortable: false},
-    {data: 'desc', title: 'Desc'},
+    }
+    {data: 'action', title: 'Action', sortable: false}
+    {data: 'collection', title: 'Data Set', sortable: false}
+    {data: 'desc', title: 'Desc'}
     {
       data: 'rollback'
       title: 'Rollback',

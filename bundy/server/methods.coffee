@@ -1,5 +1,6 @@
 Meteor.methods({
   createPayStub: (sessionIds, billingPeriodIndex) ->
+    check(sessionIds, [String])
     this.unblock()
     sessions = Sessions.find({_id: {$in: sessionIds}}).fetch()
     if sessions.length != sessionIds.length
@@ -39,6 +40,7 @@ Meteor.methods({
       PayStubs.insert(pay_stub)
 
   createInvoice: (sessionIds, billingPeriodIndex) ->
+    check(sessionIds, [String])
     this.unblock()
     sessions = Sessions.find({_id: {$in: sessionIds}}).fetch()
     if sessions.length != sessionIds.length
