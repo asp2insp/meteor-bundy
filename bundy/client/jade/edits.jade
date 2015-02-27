@@ -49,6 +49,10 @@ template(name="editAdjustments")
     .panel-body
       form.addform(role="form")
         table.table
+          thead
+            tr
+              td Name
+              td Amount
           each getAdjustments
             tr
               td {{name}}

@@ -44,12 +44,12 @@ Template.editAdjustments.helpers({
 
 Template.editAdjustments.events({
   'click a.remove': (e, t) ->
-    adjustments = getComposite(t.data.key)
+    adjustments = getComposite(t.data.key) || []
     lodash.remove(adjustments, {name: $(e.currentTarget).data('name')})
     setComposite(t.data.key, adjustments)
   'submit form.addform': (e, t) ->
     e.preventDefault()
-    adjustments = getComposite(t.data.key)
+    adjustments = getComposite(t.data.key) || []
     adjustments.push({
       name: $(t.find('.name')).val(),
       amount: $(t.find('.amount')).val() - 0
@@ -108,12 +108,12 @@ cascadeChanges = (session, changed_keys) ->
   if nextKeys.length > 0
     cascadeChanges(session, nextKeys)
 
-convertToTargetType = (value, target, formatString) ->
-  switch typeof target
-    when 'string' then return ''+value
-    when 'number' then return value - 0
-    when 'object'
-      if target instanceof Date && formatString?
-        return moment(value, formatString).toDate()
-    else
-      return value
+@convertToTargetType = (value, target, formatString) ->
+  if target?
+    switch typeof target
+      when 'string' then return ''+value
+      when 'number' then return value - 0
+      when 'object'
+        if target instanceof Date && formatString?
+          return moment(value, formatString).toDate()
+  return value
