@@ -39,6 +39,8 @@ adminRoutes = [
   new NavRoute('send-invoices', '', {isMainNav: false})
   new NavRoute('send-pay', '', {isMainNav: false})
 
+  new NavRoute('billingRates', 'fa-dollar', {label: 'Billing Rates'})
+
   new NavRoute('accounting', 'fa-line-chart')
   new NavRoute('monthlyPL', 'fa-pie-chart',  {parentName: 'accounting', label: 'Monthly P/L'})
   new NavRoute('annualPL', 'fa-area-chart',  {parentName: 'accounting', label: 'Annual P/L'})

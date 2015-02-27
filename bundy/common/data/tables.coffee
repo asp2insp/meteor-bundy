@@ -303,3 +303,23 @@ TabularTables.BillingInvoices = new Tabular.Table({
     }
   ]
 })
+
+TabularTables.BillingRates = new Tabular.Table({
+  name: 'BillingRates'
+  collection: BillingRates
+  pageLength: 1000
+  columns: [
+    {
+      title: 'Client'
+      data: 'client_id'
+      render: (client_id) ->
+        return Clients.findOne(client_id)?.name
+    }
+    {
+      title: 'Employee'
+      data: 'employee_id'
+      render: (employee_id) ->
+        return Employees.findOne(employee_id)?.name
+    }
+  ]
+})
