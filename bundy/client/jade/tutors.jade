@@ -24,17 +24,17 @@ template(name="editTutor")
           .row
             .col-md-6
               label Name
-                input#name.form-control(type="text")
+                input#profile__name.form-control(type="text")
             .col-md-6
               label Title
-                input#type.form-control(type="text")
+                input#profile__type.form-control(type="text")
           .row
             .col-md-6
               label Email
-                input#email.form-control(type="email")
+                input#emails__0__address.form-control(type="email")
             .col-md-6
               label Phone
-                input#phone.form-control(type="tel")
+                input#profile__phone.form-control(type="tel")
         .modal-footer
           button#deletebutton.btn.btn-danger(type="button", data-dismiss="modal") Delete
           button.btn.btn-default(type="button", data-dismiss="modal") Cancel
