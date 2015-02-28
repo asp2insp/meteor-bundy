@@ -35,14 +35,6 @@ template(name="editTutor")
             .col-md-6
               label Phone
                 input#phone.form-control(type="tel")
-          .row
-            .col-md-12#pay_adjustments
-              label Pay Adjustments
-              +editAdjustments(key="editTutor.pay_adjustments")
-          .row
-            .col-md-12#billing_rates
-              label Billing Rates
-              +editAdjustments(key="editTutor.billing_rates")
         .modal-footer
           button#deletebutton.btn.btn-danger(type="button", data-dismiss="modal") Delete
           button.btn.btn-default(type="button", data-dismiss="modal") Cancel

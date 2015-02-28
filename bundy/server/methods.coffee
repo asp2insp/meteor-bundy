@@ -81,24 +81,29 @@ Meteor.methods({
       ClientInvoices.insert(invoice)
 
   upsertEmployee: (id, employee) ->
-    em = {
-      profile: {
-        phone: employee.phone
-        name: employee.name
-        type: employee.type
-      }
-    }
-    if id?
+    unless id?
+      id = Accounts.createUser({
+        email: employee.email,
+        profile: {
+          phone: employee.phone
+          name: employee.name
+          type: employee.type
+        }
+      })
+    else
       Employees.update(id, {$set:
         profile: {
           phone: employee.phone
           name: employee.name
           type: employee.type
         }
-        emails: employee.email
+        emails: [
+          {
+            address: employee.email
+            verified: false
+          }
+        ]
       })
-    else
-      Employees.insert(em)
 })
 
 Accounts.config({

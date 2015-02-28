@@ -117,10 +117,17 @@ if Meteor.isServer
   userIsAdmin = (userId) ->
     return Meteor.users.findOne(userId).isAdmin
 
+  Meteor.publish('employees', () ->
+    if this.userId
+      if userIsAdmin(this.userId)
+        return Employees.find({})
+      else
+        return Employees.findOne(this.userId)
+  )
   Meteor.publish("clients", () ->
     if this.userId
       if userIsAdmin(this.userId)
-        return Clients.find()
+        return Clients.find({})
       ids = []
       BillingRates.find({employee_id: this.userId}).forEach((rate) ->
         ids.push(rate.client_id)
@@ -286,3 +293,4 @@ if Meteor.isClient
   Meteor.subscribe("clients")
   Meteor.subscribe("rates")
   Meteor.subscribe("employee_types")
+  Meteor.subscribe('employees')
