@@ -73,9 +73,12 @@ Template.editAdjustments.events({
   keys = compositeKey.split('.')
   rootObj = Session.get(_.first(keys)) || {}
   obj = rootObj
-  _.forEach(_.rest(_.initial(keys)), (key) ->
+  _.forEach(_.rest(_.initial(keys)), (key, i, keys) ->
     unless obj[key]?
-      obj[key] = {}
+      if i < keys.length - 1 and keys[i+1].match(/\d+/)
+        obj[key] = []
+      else
+        obj[key] = {}
     obj = obj[key]
   )
   obj[_.last(keys)] = value
