@@ -91,6 +91,16 @@ Meteor.methods({
         profile: employee.profile
         emails: employee.emails
       })
+
+  upsertClient: (id, client) ->
+    unless id?
+      Clients.insert(client)
+    else
+      Clients.update(id, {$set:
+        email: client.email
+        phone: client.phone
+        name: client.name
+      })
 })
 
 Accounts.config({

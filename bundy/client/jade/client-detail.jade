@@ -1,8 +1,11 @@
 template(name="clientDetail")
+  +editClient(id=_id)
   #page-wrapper
     .row
       .col-lg-12
         h1.page-header {{name}}
+          .pull-right
+            button.btn.btn-primary(data-toggle="modal" data-target="#editclientmodal") Edit
     .row
       .col-lg-9
         .panel.panel-default
