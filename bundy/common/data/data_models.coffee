@@ -1,5 +1,8 @@
 Meteor.isServer && myLog = new lc.EventLog(['client_id', 'employee_id'])
 
+userIsAdmin = (userId) ->
+  return Meteor.users.findOne(userId).isAdmin
+
 @BillingPeriods = [
       {name: 'January', is_pre_paid: false, month_range: [1]},
       {name: 'February', is_pre_paid: false, month_range: [2]},
@@ -36,8 +39,21 @@ Meteor.isServer && myLog = new lc.EventLog(['client_id', 'employee_id'])
   else
     return null
 
+ADMIN_PERMISSIONS = {
+  insert: (userId, where) ->
+    return userIsAdmin(userId)
+
+  update: (userId, where, fields, modifier) ->
+    return userIsAdmin(userId)
+
+  remove: (userId, docs) ->
+    return userIsAdmin(userId)
+}
+
 # {name, phone, email, [bonus pay items], type}
 @Employees = Meteor.users
+Employees.allow(ADMIN_PERMISSIONS)
+
 Meteor.isServer && myLog.startLogging(Employees, {
   indexOn: {
     'employee_id': (user) ->
@@ -47,6 +63,8 @@ Meteor.isServer && myLog.startLogging(Employees, {
 
 # {name, phone, email, [billing_adjustments]}
 @Clients = new Mongo.Collection('Clients')
+Clients.allow(ADMIN_PERMISSIONS)
+
 Meteor.isServer && myLog.startLogging(Clients, {
   desc: (client) ->
     return client.name
@@ -77,6 +95,8 @@ Meteor.isServer && myLog.startLogging(Sessions, {
 
 # {date, amount, memo, employee_id, [client_ids], [session_ids]}
 @PayStubs = new Mongo.Collection('PayStubs')
+PayStubs.allow(ADMIN_PERMISSIONS)
+
 Meteor.isServer && myLog.startLogging(PayStubs, {
   desc: (payStub) ->
     return payStub.pay_date.toDateString() + ': $' + payStub.amount
@@ -88,6 +108,8 @@ Meteor.isServer && myLog.startLogging(PayStubs, {
 
 # {date_issued, date_due, date_paid, amount, memo, client_id, [employee_ids], [session_ids]}
 @ClientInvoices = new Mongo.Collection('ClientInvoices')
+ClientInvoices.allow(ADMIN_PERMISSIONS)
+
 Meteor.isServer && myLog.startLogging(ClientInvoices, {
   desc: (invoice) ->
     return invoice.date_issued.toDateString() + ': $' + invoice.amount
@@ -113,9 +135,6 @@ if Meteor.isServer
     else
       this.ready()
   )
-
-  userIsAdmin = (userId) ->
-    return Meteor.users.findOne(userId).isAdmin
 
   Meteor.publish('employees', () ->
     if this.userId

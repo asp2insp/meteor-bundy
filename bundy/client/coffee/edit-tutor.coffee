@@ -26,8 +26,9 @@ Template.editTutor.events({
     Meteor.call('upsertEmployee', tutor?._id, tutor)
     Session.set('editTutor', null)
   'click #deletebutton': (e, t) ->
-    Employees.remove({_id: Session.get('editTutorId')})
+    Employees.remove({_id: Session.get('editTutor')?._id})
     Session.set('editTutor', null)
+    Router.go('tutors')
 })
 
 Template.editTutor.helpers({

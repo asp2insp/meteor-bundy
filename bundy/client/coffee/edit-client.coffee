@@ -28,6 +28,7 @@ Template.editClient.events({
   'click #deletebutton': (e, t) ->
     Clients.remove({_id: Session.get('editClient')?._id})
     Session.set('editClient', null)
+    Router.go('clients')
 })
 
 Template.editClient.helpers({
