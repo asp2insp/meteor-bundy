@@ -60,6 +60,7 @@ logSession = () ->
   session.billing_rate = _.pick(rate, ['session_type', 'unit_bill_rate', 'unit_pay_rate'])
   session.billing_rate.origin_id = rate._id
   session.notes = $('#notes').val()
+  session.cancellation_type = $('#cancellation').val()
   day = moment($("#date").val())
   start = moment($("#starttime").val(), 'h:mma')
   end = moment($("#endtime").val(), 'h:mma')
@@ -91,7 +92,7 @@ calculatePayAdjustments = (session) ->
   session.pay_adjustments = []
   _.forEach(Employees.findOne({_id: session.employee_id}).pay_adjustments, (adj) ->
     if conditionsMet(adj, session)
-      session.pay_adjustments.push(_.pick(adj, ['name', 'amount']))
+      session.pay_adjustments.push(_.pick(adj, ['name', 'amount', 'multiplier']))
   )
   return session
 
@@ -101,6 +102,12 @@ calculateBillingAdjustments = (session) ->
     if conditionsMet(adj, session)
       session.billing_adjustments.push(_.pick(adj, ['name', 'amount']))
   )
+  if session.cancellation_type? and Cancellations[session.cancellation_type]?
+    session.billing_adjustments.push({
+      name: 'Cancellation: ' + session.cancellation_type
+      multiplier: Cancellations[session.cancellation_type].adjustment_factor
+      amount: 0
+    })
   return session
 
 conditionsMet = (adj, session) ->
@@ -113,14 +120,16 @@ conditionsMet = (adj, session) ->
 @calculateTotalBill = (session) ->
   session.total_bill = session.units * session.billing_rate.unit_bill_rate
   session.total_bill += _.reduce(session.billing_adjustments, (sum, adj) ->
-    sum = sum || 0
     return sum + adj.amount
   , 0)
+  # Multiply together factors
+  session.total_bill *= _.reduce(session.billing_adjustments, (product, adj) ->
+    return if adj.multiplier? then product * adj.multiplier else 1
+  , 1)
   return session
 
 @calculateTotalPay = (session) ->
   session.total_pay = session.units * session.billing_rate.unit_pay_rate
   session.total_pay += _.reduce(session.pay_adjustments, (sum, adj) ->
-    sum = sum || 0
     return sum + adj.amount
   , 0)
