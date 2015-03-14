@@ -4,6 +4,9 @@
  - P/L reports
   - Annual
   - Monthly? Trends?
+- Cancellation expungement
+  - automatic (after X billing cycles)
+  - manual (forgiveness)
 
 # Cleanup
  - Search in DataTables doesn't work
@@ -32,10 +35,3 @@ Alphabetize Monthly Billing Clients
 Revenue/Expenses segmented by tutor (PL page clone but per tutor)
 
 Flat Rate has effective pre-pay day in notes
-
-
-Types of Cancellations:
-A: Gave 24 hours notice (2/semester) (track allocation of cancellations)
-B: No-Show or cancel < 24 hours - full charge, full pay
-C: Sick - No Charge
-D: School Holiday - No Charge
