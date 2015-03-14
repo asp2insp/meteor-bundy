@@ -43,7 +43,9 @@ template(name="log")
               i.fa.fa-comment-o
             input.form-control#notes(type="text", placeholder="Notes")
       .row
-        .col-md-10
+        .col-md-4
+          +cancellationSelector
+        .col-md-6
         .col-md-2
           button.btn.btn-success.pull-right(type="submit") Record
       .row(style='margin-top: 25px;')
@@ -53,3 +55,9 @@ template(name="log")
               span(aria-hidden="true") &times;
               span.sr-only Close
             | Successfully recorded session
+
+template(name="cancellationSelector")
+  select.form-control#cancellation
+    option(value='None') Cancellation Type
+    each cancellations
+      option(value=value) #{text}

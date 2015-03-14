@@ -106,7 +106,7 @@ Meteor.isServer && myLog.startLogging(PayStubs, {
   }
 })
 
-# {date_issued, date_due, date_paid, amount, memo, client_id, [employee_ids], [session_ids]}
+# {date_issued, date_due, date_paid, date_deposited, amount, memo, client_id, [employee_ids], [session_ids]}
 @ClientInvoices = new Mongo.Collection('ClientInvoices')
 ClientInvoices.allow(ADMIN_PERMISSIONS)
 
@@ -124,6 +124,26 @@ Meteor.isServer && myLog.startLogging(ClientInvoices, {
 
 # {name, date, amount}
 @Expenses = new Mongo.Collection('Expenses')
+
+# {type_code, description, adjustment_factor}
+@Cancellations = {
+  A: {
+    description: 'Cancellation with 24 hours notice'
+    adjustment_factor: 0
+  }
+  B: {
+    description: 'No-Show or cancelation with less than 24 hours notice'
+    adjustment_factor: 1
+  }
+  C: {
+    description: 'Sick'
+    adjustment_factor: 0
+  }
+  D: {
+    description: 'School Holiday'
+    adjustment_factor: 0
+  }
+}
 
 if Meteor.isServer
   Meteor.publish("userData", () ->

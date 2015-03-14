@@ -1,3 +1,13 @@
+Template.cancellationSelector.helpers({
+  cancellations: () ->
+    return lodash.map(Cancellations, (cancellation, name) ->
+      return {
+        value: name
+        text: name + ': ' + cancellation.description
+      }
+    )
+})
+
 Template.log.helpers({
   getClientsOfUser: () ->
     clients = []
