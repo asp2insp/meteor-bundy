@@ -61,29 +61,6 @@ Template.editAdjustments.events({
     $(e.currentTarget).trigger('adjustmentAdded')
 })
 
-@getComposite = (compositeKey) ->
-  keys = compositeKey.split('.')
-  obj = Session.get(_.first(keys))
-  _.forEach(_.rest(keys), (key) ->
-    obj = obj?[key]
-  )
-  return obj
-
-@setComposite = (compositeKey, value) ->
-  keys = compositeKey.split('.')
-  rootObj = Session.get(_.first(keys)) || {}
-  obj = rootObj
-  _.forEach(_.rest(_.initial(keys)), (key, i, keys) ->
-    unless obj[key]?
-      if i < keys.length - 1 and keys[i+1].match(/\d+/)
-        obj[key] = []
-      else
-        obj[key] = {}
-    obj = obj[key]
-  )
-  obj[_.last(keys)] = value
-  Session.set(_.first(keys), rootObj)
-
 @getIdsForTable = (tableName, currentSelector) ->
   deferred = new $.Deferred()
   Meteor.call("tabular_getInfo", tableName, currentSelector, {}, 0, 10000, (error, result) ->
@@ -110,6 +87,7 @@ cascadeChanges = (session, changed_keys) ->
   )
   if nextKeys.length > 0
     cascadeChanges(session, nextKeys)
+
 
 @convertToTargetType = (value, target, formatString) ->
   if target?

@@ -1,11 +1,13 @@
 flatKeys = function(obj, arr, pre) {
-  arr = arr || [];
-  pre = pre || '';
+  var arr = arr || [];
+  var pre = pre || [];
   lodash.forEach(obj, function(n, key) {
-    if (arr.indexOf(pre+key) == -1) {
-      arr.push(pre + key);
+    var keyPath = _.cloneDeep(pre);
+    keyPath.push(key);
+    if (arr.indexOf(keyPath) == -1) {
+      arr.push(keyPath);
       if (n instanceof Object) {
-        flatKeys(n, arr, pre + key + '.');
+        flatKeys(n, arr, keyPath);
       }
     }
   });
