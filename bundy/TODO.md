@@ -1,3 +1,7 @@
+# WIP
+ - Finish refactor to nuclear-session
+
+
 # Core
  - Billing Rate management
  - Monthly Billing flow

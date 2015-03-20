@@ -4,14 +4,10 @@ Template.editClient.rendered = () ->
     Session.set('editClient', Clients.findOne(id))
   client = Session.get('editClient')
   if client?
-    lodash.forEach(flatKeys(client), (key) ->
-      value = getComposite('editClient.' + key)
-      el = this.$('#'+key.replace(/\./g, '__'))[0]
-      if el?
-        if value instanceof Date
-          $(el).val(moment(value)?.format('YYYY-MM-DDTHH:mm:ss'))
-        else
-          $(el).val(value)
+    lodash.forEach($("#editclientmodal input"), (el) ->
+      if $(el).data("keyPath")?
+        keyPath = prefix($(el).data("keyPath"))
+        $(el).val(getComposite(keyPath))
     )
   else
     Session.set('editClient', {})
@@ -19,8 +15,8 @@ Template.editClient.rendered = () ->
 Template.editClient.events({
   'change input': (e, t) ->
     newValue = $(e.currentTarget).val()
-    key = e.currentTarget.id.replace(/__/g, '.')
-    setComposite('editClient.' + key, newValue)
+    key = $(e.currentTarget).data("keyPath")
+    setComposite(prefix('editClient', key), newValue)
   'click #savebutton': (e, t) ->
     client = Session.get('editClient')
     Meteor.call('upsertClient', client?._id, client)

@@ -22,14 +22,14 @@ template(name="editClient")
           .row
             .col-md-12
               label Name
-                input#name.form-control(type="text")
+                input.form-control(type="text" data-keypath="name")
           .row
             .col-md-6
               label Email
-                input#email.form-control(type="email")
+                input.form-control(type="email" data-keypath="email")
             .col-md-6
               label Phone
-                input#phone.form-control(type="tel")
+                input.form-control(type="tel" data-keypath="phone")
         .modal-footer
           button#deletebutton.btn.btn-danger(type="button", data-dismiss="modal") Delete
           button.btn.btn-default(type="button", data-dismiss="modal") Cancel

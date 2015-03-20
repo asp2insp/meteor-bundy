@@ -10,34 +10,34 @@ template(name="editSession")
           .row
             .col-md-6
               label Start Time
-                input#start_time.form-control(type="datetime-local")
+                input.form-control(type="datetime-local" data-keypath="start_time")
             .col-md-6
               label End Time
-                input#end_time.form-control(type="datetime-local")
+                input.form-control(type="datetime-local" data-keypath="end_time")
           .row
             .col-md-4
               label Total Units
-                input#units.form-control(type="number")
+                input.form-control(type="number" data-keypath="units")
             .col-md-8
               .form-group
                 label Notes
-                input#notes.form-control(type="text")
+                input.form-control(type="text" data-keypath="notes")
           .row
-            .col-md-6#pay_adjustments
+            .col-md-6
               label Pay Adjustments
-              +editAdjustments(key="editSession.pay_adjustments")
-            .col-md-6#billing_adjustments
+              +editAdjustments(key="editSession,pay_adjustments")
+            .col-md-6
               label Billing Adjustments
-              +editAdjustments(key="editSession.billing_adjustments")
+              +editAdjustments(key="editSession,billing_adjustments")
           .row
             .col-md-6
               .form-group
                 label Total Pay
-                input#total_pay.form-control(type="number")
+                input.form-control(type="number" data-keypath="total_pay")
             .col-md-6
               .form-group
                 label Total Bill
-                input#total_bill.form-control(type="number")
+                input.form-control(type="number" data-keypath="total_bill")
         .modal-footer
           button#deletebutton.btn.btn-danger(type="button", data-dismiss="modal") Delete
           button.btn.btn-default(type="button", data-dismiss="modal") Cancel
