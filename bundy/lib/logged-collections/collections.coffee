@@ -48,7 +48,7 @@ class EventLog
       if options.desc
         ev.desc = options.desc(doc)
       else
-        ev.desc = _.join(', ', fieldNames)
+        ev.desc = _(fieldNames).join(', ')
       if options.indexOn
         _.forEach(options.indexOn, (func, prop) ->
           ev[prop] = func(doc)
