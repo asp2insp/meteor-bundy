@@ -1,38 +1,24 @@
-Template.editTutor.rendered = () ->
-  id = Template.currentData()?.id
-  if id?
-    Session.set('editTutor', Employees.findOne(id))
-  tutor = Session.get('editTutor')
-  if tutor?
-    lodash.forEach(flatKeys(tutor), (key) ->
-      value = getComposite('editTutor.' + key)
-      el = this.$('#'+key.replace(/\./g, '__'))[0]
-      if el?
-        if value instanceof Date
-          $(el).val(moment(value)?.format('YYYY-MM-DDTHH:mm:ss'))
-        else
-          $(el).val(value)
-    )
-  else
-    Session.set('editTutor', {})
+Template.editTutor.viewmodel ((data) -> data),
+  tutor: -> Employees.findOne @_id()
+  editOrNew: -> if @_id()? then 'Edit' else 'New Tutor'
+  deleteShown: -> !!@_id()?
+  email: -> @emails?()[0]?.address
+  save: ->
+    data = {
+      profile: {
+        name: @profile().name
+        emails: [{address: @email()}]
+        phone: @profile().phone
+        type: @profile().type
+      }
+      _id: if @_id()? then @_id() else undefined
+    }
+    console.log data
+    Meteor.call('upsertEmployee', @_id(), data)
+  delete: ->
+    Employees.remove({_id: @_id()})
+    Router.go('clients')
 
-Template.editTutor.events({
-  'change input': (e, t) ->
-    newValue = $(e.currentTarget).val()
-    key = e.currentTarget.id.replace(/__/g, '.')
-    setComposite('editTutor.' + key, newValue)
-  'click #savebutton': (e, t) ->
-    tutor = Session.get('editTutor')
-    Meteor.call('upsertEmployee', tutor?._id, tutor)
-    Session.set('editTutor', null)
-  'click #deletebutton': (e, t) ->
-    Employees.remove({_id: Session.get('editTutor')?._id})
-    Session.set('editTutor', null)
-    Router.go('tutors')
-})
-
-Template.editTutor.helpers({
-  editOrNew: () ->
-    id = Template.currentData()?.id
-    return if id? then 'Edit' else 'New Tutor'
+Template.tutors.helpers({
+  blank: -> {_id: null, profile: {phone: '', name: '', email: '', type: ''}}
 })

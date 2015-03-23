@@ -5,7 +5,7 @@ template(name="employeeDetail")
         h1.page-header {{profile.name}}
           .pull-right
             button.btn.btn-primary(data-toggle="modal" data-target="#edittutormodal") Edit
-    +editTutor(id=_id)
+    +editTutor(this)
     .row
       .col-lg-9
         .panel.panel-default
