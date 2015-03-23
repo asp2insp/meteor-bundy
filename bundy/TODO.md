@@ -1,3 +1,10 @@
+# Current
+- Update Log Session to use viewmodel
+- Update Edit Session to use viewmodel
+- Update Employee table to get rid of profile object
+- Update edit tutor to use viewmodel
+
+
 # Core
  - Billing Rate management
  - Monthly Billing flow
@@ -11,6 +18,7 @@
 # Cleanup
  - Search in DataTables doesn't work
  - Invoices/PayStubs should notify when they need updating! (Low Priority)
+ - Resolve Employee/Tutor misnaming
 
 # Wishlist
  - Smart session pre-fill
