@@ -83,14 +83,15 @@ Meteor.methods({
   upsertEmployee: (id, employee) ->
     unless id?
       id = Accounts.createUser({
-        profile: employee.profile,
-        email: employee.emails[0].address
+        email: employee.email
       })
-    else
-      Employees.update(id, {$set:
-        profile: employee.profile
-        emails: employee.emails
-      })
+
+    Employees.update(id, {$set:
+      email: employee.email
+      name: employee.name
+      type: employee.type
+      phone: employee.phone
+    })
 
   upsertClient: (id, client) ->
     unless id?

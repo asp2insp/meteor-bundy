@@ -55,12 +55,12 @@ TabularTables.Employees = new Tabular.Table({
   collection: Employees,
   columns: [
     {
-      data: 'profile.name',
+      data: 'name',
       title: 'Name',
       render: (name, type, doc) ->
         return '<a href="/tutors/' + doc._id + '">' + name + '</a>'
     },
-    {data: 'profile.type', title: 'Type'},
+    {data: 'type', title: 'Type'},
     {
       data: 'pay_adjustments',
       title: 'Pay Adjustments',
@@ -116,7 +116,7 @@ ClientSessionColumns = [
     title: 'Tutor',
     render: (_id, type, doc) ->
       employee = Employees.findOne(_id)
-      return '<a href="/tutors/' + _id + '">' + employee.profile.name + '</a>'
+      return '<a href="/tutors/' + _id + '">' + employee.name + '</a>'
   },
   {
     data: 'billing_rate',
@@ -173,7 +173,7 @@ TabularTables.BillingEmployees = new Tabular.Table({
   dom: 't',
   columns: [
     {
-      data: 'profile.name',
+      data: 'name',
       title: 'Name',
       sortable: false,
       render: (name, type, doc) ->
@@ -255,7 +255,7 @@ TabularTables.BillingPayStubs = new Tabular.Table({
       title: 'Tutor',
       data: 'employee_id',
       render: (employee_id) ->
-        return Employees.findOne(employee_id)?.profile?.name
+        return Employees.findOne(employee_id)?.name
     },
     {
       title: 'Sessions',
@@ -297,7 +297,7 @@ TabularTables.BillingInvoices = new Tabular.Table({
       render: (session_ids) ->
         sessions = Sessions.find({_id: {$in: session_ids}}).fetch()
         return _.reduce(sessions, (acc, curr) ->
-          employee_name = Employees.findOne(curr.employee_id)?.profile?.name
+          employee_name = Employees.findOne(curr.employee_id)?.name
           return acc + '<li>' + employee_name + ': ' + curr.billing_rate.session_type + ' - ' + curr.total_bill + '</li>'
         , '<ul>') + '</ul>'
     }

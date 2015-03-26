@@ -18,7 +18,7 @@
       data: 'user_id',
       title: 'User',
       render: (val) ->
-        return Meteor.users.findOne(val)?.profile.name
+        return Meteor.users.findOne(val)?.name
     }
     {data: 'action', title: 'Action', sortable: false}
     {data: 'collection', title: 'Data Set', sortable: false}

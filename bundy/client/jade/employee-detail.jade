@@ -2,7 +2,7 @@ template(name="employeeDetail")
   #page-wrapper
     .row
       .col-lg-12
-        h1.page-header {{profile.name}}
+        h1.page-header {{name}}
           .pull-right
             button.btn.btn-primary(data-toggle="modal" data-target="#edittutormodal") Edit
     +editTutor(this)

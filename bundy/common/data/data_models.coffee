@@ -159,9 +159,9 @@ if Meteor.isServer
   Meteor.publish('employees', () ->
     if this.userId
       if userIsAdmin(this.userId)
-        return Employees.find({}, {fields: {'profile': 1, 'emails': 1, 'pay_adjustments': 1}})
+        return Employees.find({}, {fields: {'name': 1, 'email': 1, 'type': 1, 'phone': 1, 'emails': 1, 'pay_adjustments': 1}})
       else
-        return Employees.findOne(this.userId, {fields: {'profile': 1, 'emails': 1, 'pay_adjustments': 1}})
+        return Employees.findOne(this.userId, {fields: {'name': 1, 'email': 1, 'type': 1, 'phone': 1, 'emails': 1, 'pay_adjustments': 1}})
   )
   Meteor.publish("clients", () ->
     if this.userId
