@@ -149,8 +149,12 @@ if Meteor.isServer
   Meteor.publish("userData", () ->
     if this.userId
       return Meteor.users.find({_id: this.userId}, {fields: {
-                                  'isAdmin': 1,
-                                  'pay_adjustments': 1,
+                                  'isAdmin': 1
+                                  'pay_adjustments': 1
+                                  'name': 1
+                                  'email': 1
+                                  'phone': 1
+                                  'type': 1
                                }})
     else
       this.ready()
