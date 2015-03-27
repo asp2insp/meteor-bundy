@@ -1,24 +1,8 @@
-Template.profile.events({
-  'click #logout-link': () ->
+Template.profile.viewmodel({
+  save: -> saveProfile()
+  logout: ->
     Meteor.logout()
     Router.go('/')
-    return false
-})
-
-Template.editProfile.events({
-  'submit #profile-edit-form': (e, t) ->
-    e.preventDefault()
-    saveProfile()
-    return false
-
-  'click #save-profile': () ->
-    saveProfile()
-    return false
-
-  'click #logout-link': () ->
-    Meteor.logout()
-    Router.go('/')
-    return false
 })
 
 saveProfile = () ->

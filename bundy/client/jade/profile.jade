@@ -9,7 +9,7 @@ template(name="profile")
         .col-xs-12.col-sm-12.col-md-6.col-lg-6.col-xs-offset-0.col-sm-offset-0.col-md-offset-3.col-lg-offset-3.toppad
           .panel.panel-info
             .panel-heading
-              h3.panel-title {{currentUser.profile.name}}
+              h3.panel-title(data-bind="text: name")
             .panel-body
               .row
                 .col-md-3.col-lg-3(align='center')
@@ -19,18 +19,16 @@ template(name="profile")
                     tbody
                       tr
                         td Title:
-                        td {{currentUser.profile.type}}
+                        td (data-bind="text: type")
                       tr
                         td Email
                         td
-                          a(href='mailto:{{currentUser.emails.[0].address}}') {{currentUser.emails.[0].address}}
+                          a(href='mailto:{{currentUser.emails.[0].address}}' data-bind="text: email")
                       tr
                         td Phone Number
-                        td
-                          | {{currentUser.profile.phone}}
-                  //a.btn.btn-primary(href='#') My Stats
+                        td(data-bind="text: phone")
             .panel-footer
-              a.btn.btn-sm.btn-warning(href='/edit-profile', data-original-title='Edit this user', data-toggle='tooltip', type='button')
+              a.btn.btn-sm.btn-warning(href='/edit-profile' data-original-title='Edit this user' data-toggle='tooltip' type='button')
                 i.glyphicon.glyphicon-edit
 
 template(name="editProfile")
@@ -38,15 +36,15 @@ template(name="editProfile")
     .row
       form#profile-edit-form(role="form")
         .col-md-5.toppad.pull-right.col-md-offset-3
-          a#save-profile(href='#') Save
-          a#logout-link(href='#') Logout
+          a#save-profile(href='#' data-bind="click: save") Save
+          a#logout-link(href='#' data-bind="click: logout") Logout
           br
           p.text-info {{currentLocalTime}}
         .col-xs-12.col-sm-12.col-md-6.col-lg-6.col-xs-offset-0.col-sm-offset-0.col-md-offset-3.col-lg-offset-3.toppad
           .panel.panel-info
             .panel-heading
               h3.panel-title
-                input#name(value='{{currentUser.profile.name}}')
+                input#name(data-bind="value: name")
             .panel-body
               .row
                 .col-md-3.col-lg-3(align='center')
@@ -58,20 +56,19 @@ template(name="editProfile")
                         td Title:
                         td
                           if currentUser.isAdmin
-                            input#type(value='{{currentUser.profile.type}}')
+                            input#type(data-bind="value: type")
                           else
-                            | {{currentUser.type}}
+                            span(data-bind="text: type")
                       tr
                         td Email
                         td
-                          //input#emailaddress(value='{{currentUser.emails.[0].address}}')
-                          | {{currentUser.emails.[0].address}}
+                          input(data-bind="value: email")
                       tr
                         td Phone Number
                         td
-                          input#phonenumber(value='{{currentUser.profile.phone}}')
+                          input#phonenumber(data-bind="value: phone")
             .panel-footer
-              a.btn.btn-sm.btn-danger(href='/profile', data-original-title='Cancel Edit', data-toggle='tooltip', type='button')
+              a.btn.btn-sm.btn-danger(href='/profile' data-original-title='Cancel Edit' data-toggle='tooltip' type='button')
                   i.glyphicon.glyphicon-remove
               span.pull-right
-                input#save-button.btn-success.form-control(type="submit", value="Save")
+                input#save-button.btn-success.form-control(type="submit" value="Save" data-bind="click: save")
