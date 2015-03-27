@@ -1,5 +1,20 @@
 Template.profile.viewmodel({
   save: -> saveProfile()
+  name: -> Meteor.user().name
+  email: -> Meteor.user().email
+  phone: -> Meteor.user().phone
+  type: -> Meteor.user().type
+  logout: ->
+    Meteor.logout()
+    Router.go('/')
+})
+
+Template.editProfile.viewmodel({
+  save: -> saveProfile()
+  name: -> Meteor.user().name
+  email: -> Meteor.user().email
+  phone: -> Meteor.user().phone
+  type: -> Meteor.user().type
   logout: ->
     Meteor.logout()
     Router.go('/')
